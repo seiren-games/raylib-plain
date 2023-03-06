@@ -48,7 +48,13 @@ pub fn close_window() {
 
 pub fn set_target_fps(fps: ::std::os::raw::c_int) {
     unsafe {
-        rl::SetTargetFPS(fps)
+        rl::SetTargetFPS(fps);
+    }
+}
+
+pub fn get_fps() -> ::std::os::raw::c_int {
+    unsafe {
+        return rl::GetFPS();
     }
 }
 
