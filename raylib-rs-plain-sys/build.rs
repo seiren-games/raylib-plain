@@ -13,6 +13,7 @@ fn main() {
 
      let bindings = bindgen::Builder::default()
         .header(RAYLIB_REPOSITORY_PATH.to_string() + "/src/raylib.h")
+        .default_enum_style(bindgen::EnumVariation::Rust { non_exhaustive: false })
         .raw_line(r"#![allow(non_upper_case_globals)]")
         .raw_line(r"#![allow(non_camel_case_types)]")
         .raw_line(r"#![allow(non_snake_case)]")
