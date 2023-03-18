@@ -1,6 +1,8 @@
 use raylib_rs_plain_sys as rl;
 use std::ffi::CString;
 pub use rl::Color;
+pub use rl::Texture;
+pub use rl::KeyboardKey;
 
 pub fn init_window(width: ::std::os::raw::c_int, height: ::std::os::raw::c_int, title: &str) {
     let title: CString = CString::new(title).unwrap();
@@ -34,6 +36,17 @@ pub fn draw_text(text: &str, pos_x: ::std::os::raw::c_int, pos_y: ::std::os::raw
     }
 }
 
+pub fn draw_texture(
+    texture: rl::Texture2D,
+    pos_x: ::std::os::raw::c_int,
+    pos_y: ::std::os::raw::c_int,
+    tint: Color,
+) {
+    unsafe {
+        rl::DrawTexture(texture, pos_x, pos_y, tint);
+    }
+}
+
 pub fn end_drawing() {
     unsafe {
         rl::EndDrawing();
@@ -55,6 +68,33 @@ pub fn set_target_fps(fps: ::std::os::raw::c_int) {
 pub fn get_fps() -> ::std::os::raw::c_int {
     unsafe {
         return rl::GetFPS();
+    }
+}
+
+pub fn load_texture(file_name: &str) -> rl::Texture2D {
+    let file_name:*const ::std::os::raw::c_char = std::ffi::CStr::as_ptr(&CString::new(file_name).unwrap());
+    unsafe {
+        return rl::LoadTexture(file_name);
+    }
+}
+
+pub fn get_screen_width() -> ::std::os::raw::c_int {
+    unsafe {
+        return rl::GetScreenWidth();
+    }
+}
+
+pub fn get_screen_height() -> ::std::os::raw::c_int {
+    unsafe {
+        return rl::GetScreenHeight();
+    }
+}
+
+pub fn is_key_down(key: rl::KeyboardKey) -> bool {
+    unsafe {
+        // TODO: Might want to avoid `as`.
+        // - e.g. `use num::ToPrimitive`
+        return rl::IsKeyDown(key as i32);
     }
 }
 
