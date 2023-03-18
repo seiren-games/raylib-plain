@@ -72,9 +72,9 @@ pub fn get_fps() -> ::std::os::raw::c_int {
 }
 
 pub fn load_texture(file_name: &str) -> rl::Texture2D {
-    let file_name:*const ::std::os::raw::c_char = std::ffi::CStr::as_ptr(&CString::new(file_name).unwrap());
+    let file_name: CString = CString::new(file_name).unwrap();
     unsafe {
-        return rl::LoadTexture(file_name);
+        return rl::LoadTexture(file_name.as_ptr());
     }
 }
 
