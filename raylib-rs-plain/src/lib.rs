@@ -108,6 +108,8 @@ mod tests {
         let bg_color:rl::Color = rl::Color { r: 245, g: 245, b: 245, a: 255 };
         let text_color:rl::Color = rl::Color { r: 200, g: 200, b: 200, a: 255 };
         init_window(800, 450, "raylib [core] example - basic window");
+        assert_eq!(get_screen_width(), 800);
+        assert_eq!(get_screen_height(), 450);
         while !window_should_close() {
             begin_drawing();
             clear_background(bg_color);
