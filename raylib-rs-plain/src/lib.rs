@@ -71,10 +71,16 @@ pub fn get_fps() -> ::std::os::raw::c_int {
     }
 }
 
-pub fn load_texture(file_name: &str) -> rl::Texture2D {
+pub fn load_texture(file_name: &str) -> Option<rl::Texture2D> {
     let file_name: CString = CString::new(file_name).unwrap();
+    let texture: rl::Texture2D;
     unsafe {
-        return rl::LoadTexture(file_name.as_ptr());
+        texture = rl::LoadTexture(file_name.as_ptr());
+    }
+    return if texture.id == 0 {
+        Option::None
+    } else {
+        Option::Some(texture)
     }
 }
 
