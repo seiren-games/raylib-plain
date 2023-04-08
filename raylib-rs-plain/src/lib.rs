@@ -1,10 +1,10 @@
 use raylib_rs_plain_sys as rl;
-use std::ffi::CString;
 pub use rl::Color;
-pub use rl::Texture;
 pub use rl::KeyboardKey;
 pub use rl::Rectangle;
+pub use rl::Texture;
 pub use rl::Vector2;
+use std::ffi::CString;
 
 pub fn init_window(width: ::std::os::raw::c_int, height: ::std::os::raw::c_int, title: &str) {
     let title: CString = CString::new(title).unwrap();
