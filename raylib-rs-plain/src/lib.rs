@@ -104,6 +104,11 @@ pub fn is_key_down(key: rl::KeyboardKey) -> bool {
         // - e.g. `use num::ToPrimitive`
         return rl::IsKeyDown(key as i32);
     }
+pub fn get_random_value(
+    min: ::std::os::raw::c_int,
+    max: ::std::os::raw::c_int,
+) -> ::std::os::raw::c_int {
+    return unsafe { rl::GetRandomValue(min, max) };
 }
 
 #[cfg(test)]
