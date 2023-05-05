@@ -92,6 +92,14 @@ pub fn get_random_value(
     return unsafe { rl::GetRandomValue(min, max) };
 }
 
+pub fn measure_text(
+    text: &str,
+    font_size: ::std::os::raw::c_int,
+) -> ::std::os::raw::c_int {
+    let text: CString = CString::new(text).unwrap();
+    return unsafe { rl::MeasureText(text.as_ptr(), font_size) };
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
