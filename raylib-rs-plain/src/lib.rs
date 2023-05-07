@@ -100,6 +100,24 @@ pub fn measure_text(
     return unsafe { rl::MeasureText(text.as_ptr(), font_size) };
 }
 
+pub fn draw_rectangle(
+    pos_x: ::std::os::raw::c_int,
+    pos_y: ::std::os::raw::c_int,
+    width: ::std::os::raw::c_int,
+    height: ::std::os::raw::c_int,
+    color: Color,
+) {
+    unsafe {
+        rl::DrawRectangle(pos_x, pos_y, width, height, color);
+    }
+}
+
+pub fn fade(color: Color, alpha: f32) -> Color {
+    return unsafe {
+        rl::Fade(color, alpha)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
