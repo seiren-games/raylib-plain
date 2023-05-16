@@ -71,6 +71,10 @@ pub fn load_texture(file_name: &str) -> Option<rl::Texture2D> {
     };
 }
 
+pub fn unload_texture(texture: rl::Texture2D) {
+    unsafe { rl::UnloadTexture(texture) };
+}
+
 pub fn get_screen_width() -> ::std::os::raw::c_int {
     return unsafe { rl::GetScreenWidth() };
 }
