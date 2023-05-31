@@ -3,6 +3,7 @@ pub use rl::Color;
 pub use rl::KeyboardKey;
 pub use rl::Rectangle;
 pub use rl::Texture;
+pub use rl::Texture2D;
 pub use rl::Vector2;
 use std::ffi::CString;
 
@@ -41,6 +42,10 @@ pub fn draw_texture(
     tint: Color,
 ) {
     unsafe { rl::DrawTexture(texture, pos_x, pos_y, tint) }
+}
+
+pub fn draw_texture_rec(texture: Texture2D, source: Rectangle, position: Vector2, tint: Color) {
+    unsafe { rl::DrawTextureRec(texture, source, position, tint) }
 }
 
 pub fn end_drawing() {
