@@ -2,6 +2,7 @@ extern crate bindgen;
 
 use std::fs::ReadDir;
 use std::fs;
+use std::io::Write;
 use std::path::PathBuf;
 
 const RAYLIB_REPOSITORY_PATH: &str = "./native-src/raylib";
@@ -29,10 +30,22 @@ fn main() {
     let out_path = PathBuf::from("src").join("lib.rs");
 
     bindings
-    .write_to_file(out_path)
+    .write_to_file(&out_path)
     .expect("Couldn't write bindings!");
 
+    // Add custom attributes to enum
+    let mut content = fs::read_to_string(&out_path)
+        .expect("Could not read the bindings file");
+    content = content.replace(
+        ")]\npub enum ",
+        ", EnumIter)]\npub enum ",
+    );
 
+    // Write back to file
+    let mut file = fs::File::create(&out_path)
+        .expect("Could not open the bindings file");
+    file.write_all(content.as_bytes())
+        .expect("Could not write to the bindings file");
 }
 
 fn clone_raylib() {
