@@ -3,6 +3,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
+use strum_macros::EnumIter;
 
 pub const __GNUC_VA_LIST: u32 = 1;
 pub const RAYLIB_VERSION: &[u8; 4usize] = b"4.2\0";
@@ -2367,7 +2368,7 @@ fn bindgen_test_layout_FilePathList() {
     );
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum ConfigFlags {
     FLAG_VSYNC_HINT = 64,
     FLAG_FULLSCREEN_MODE = 2,
@@ -2386,7 +2387,7 @@ pub enum ConfigFlags {
     FLAG_INTERLACED_HINT = 65536,
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum TraceLogLevel {
     LOG_ALL = 0,
     LOG_TRACE = 1,
@@ -2401,7 +2402,7 @@ impl KeyboardKey {
     pub const KEY_MENU: KeyboardKey = KeyboardKey::KEY_R;
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum KeyboardKey {
     KEY_NULL = 0,
     KEY_APOSTROPHE = 39,
@@ -2514,7 +2515,7 @@ pub enum KeyboardKey {
     KEY_VOLUME_DOWN = 25,
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum MouseButton {
     MOUSE_BUTTON_LEFT = 0,
     MOUSE_BUTTON_RIGHT = 1,
@@ -2525,7 +2526,7 @@ pub enum MouseButton {
     MOUSE_BUTTON_BACK = 6,
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum MouseCursor {
     MOUSE_CURSOR_DEFAULT = 0,
     MOUSE_CURSOR_ARROW = 1,
@@ -2540,7 +2541,7 @@ pub enum MouseCursor {
     MOUSE_CURSOR_NOT_ALLOWED = 10,
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum GamepadButton {
     GAMEPAD_BUTTON_UNKNOWN = 0,
     GAMEPAD_BUTTON_LEFT_FACE_UP = 1,
@@ -2562,7 +2563,7 @@ pub enum GamepadButton {
     GAMEPAD_BUTTON_RIGHT_THUMB = 17,
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum GamepadAxis {
     GAMEPAD_AXIS_LEFT_X = 0,
     GAMEPAD_AXIS_LEFT_Y = 1,
@@ -2572,7 +2573,7 @@ pub enum GamepadAxis {
     GAMEPAD_AXIS_RIGHT_TRIGGER = 5,
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum MaterialMapIndex {
     MATERIAL_MAP_ALBEDO = 0,
     MATERIAL_MAP_METALNESS = 1,
@@ -2587,7 +2588,7 @@ pub enum MaterialMapIndex {
     MATERIAL_MAP_BRDF = 10,
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum ShaderLocationIndex {
     SHADER_LOC_VERTEX_POSITION = 0,
     SHADER_LOC_VERTEX_TEXCOORD01 = 1,
@@ -2617,7 +2618,7 @@ pub enum ShaderLocationIndex {
     SHADER_LOC_MAP_BRDF = 25,
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum ShaderUniformDataType {
     SHADER_UNIFORM_FLOAT = 0,
     SHADER_UNIFORM_VEC2 = 1,
@@ -2630,7 +2631,7 @@ pub enum ShaderUniformDataType {
     SHADER_UNIFORM_SAMPLER2D = 8,
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum ShaderAttributeDataType {
     SHADER_ATTRIB_FLOAT = 0,
     SHADER_ATTRIB_VEC2 = 1,
@@ -2638,7 +2639,7 @@ pub enum ShaderAttributeDataType {
     SHADER_ATTRIB_VEC4 = 3,
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum PixelFormat {
     PIXELFORMAT_UNCOMPRESSED_GRAYSCALE = 1,
     PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA = 2,
@@ -2663,7 +2664,7 @@ pub enum PixelFormat {
     PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA = 21,
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum TextureFilter {
     TEXTURE_FILTER_POINT = 0,
     TEXTURE_FILTER_BILINEAR = 1,
@@ -2673,7 +2674,7 @@ pub enum TextureFilter {
     TEXTURE_FILTER_ANISOTROPIC_16X = 5,
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum TextureWrap {
     TEXTURE_WRAP_REPEAT = 0,
     TEXTURE_WRAP_CLAMP = 1,
@@ -2681,7 +2682,7 @@ pub enum TextureWrap {
     TEXTURE_WRAP_MIRROR_CLAMP = 3,
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum CubemapLayout {
     CUBEMAP_LAYOUT_AUTO_DETECT = 0,
     CUBEMAP_LAYOUT_LINE_VERTICAL = 1,
@@ -2691,14 +2692,14 @@ pub enum CubemapLayout {
     CUBEMAP_LAYOUT_PANORAMA = 5,
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum FontType {
     FONT_DEFAULT = 0,
     FONT_BITMAP = 1,
     FONT_SDF = 2,
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum BlendMode {
     BLEND_ALPHA = 0,
     BLEND_ADDITIVE = 1,
@@ -2709,7 +2710,7 @@ pub enum BlendMode {
     BLEND_CUSTOM = 6,
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum Gesture {
     GESTURE_NONE = 0,
     GESTURE_TAP = 1,
@@ -2724,7 +2725,7 @@ pub enum Gesture {
     GESTURE_PINCH_OUT = 512,
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum CameraMode {
     CAMERA_CUSTOM = 0,
     CAMERA_FREE = 1,
@@ -2733,13 +2734,13 @@ pub enum CameraMode {
     CAMERA_THIRD_PERSON = 4,
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum CameraProjection {
     CAMERA_PERSPECTIVE = 0,
     CAMERA_ORTHOGRAPHIC = 1,
 }
 #[repr(i32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum NPatchLayout {
     NPATCH_NINE_PATCH = 0,
     NPATCH_THREE_PATCH_VERTICAL = 1,

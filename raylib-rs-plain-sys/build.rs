@@ -18,6 +18,7 @@ fn main() {
         .raw_line(r"#![allow(non_upper_case_globals)]")
         .raw_line(r"#![allow(non_camel_case_types)]")
         .raw_line(r"#![allow(non_snake_case)]")
+        .raw_line("use strum_macros::EnumIter;")
         // Tell cargo to invalidate the built crate whenever any of the
         // included header files changed.
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
@@ -37,8 +38,8 @@ fn main() {
     let mut content = fs::read_to_string(&out_path)
         .expect("Could not read the bindings file");
     content = content.replace(
-        ")]\npub enum ",
-        ", EnumIter)]\npub enum ",
+        ")]\r\npub enum ",
+        ", EnumIter)]\r\npub enum ",
     );
 
     // Write back to file
