@@ -7,18 +7,20 @@ use std::path::PathBuf;
 
 const RAYLIB_REPOSITORY_PATH: &str = "./native-src/raylib";
 const RAYLIB_VERSION: &str = "4.2.0";
+const ADDITIONAL_RAW_LINE_COMMENT: &str = "// ------------ Additional raw_line";
+const USE_STRUM: bool = true;
 
 fn main() {
     clone_raylib();
     build_raylib();
 
-     let bindings = bindgen::Builder::default()
+    let bindings = bindgen::Builder::default()
         .header(RAYLIB_REPOSITORY_PATH.to_string() + "/src/raylib.h")
         .default_enum_style(bindgen::EnumVariation::Rust { non_exhaustive: false })
         .raw_line(r"#![allow(non_upper_case_globals)]")
         .raw_line(r"#![allow(non_camel_case_types)]")
         .raw_line(r"#![allow(non_snake_case)]")
-        .raw_line("use strum_macros::EnumIter;")
+        .raw_line(ADDITIONAL_RAW_LINE_COMMENT)
         // Tell cargo to invalidate the built crate whenever any of the
         // included header files changed.
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
@@ -30,17 +32,22 @@ fn main() {
     // Write the bindings to the $OUT_DIR/bindings.rs file.
     let out_path = PathBuf::from("src").join("lib.rs");
 
-    bindings
-    .write_to_file(&out_path)
-    .expect("Couldn't write bindings!");
-
+    let mut content = bindings.to_string();
     // Add custom attributes to enum
-    let mut content = fs::read_to_string(&out_path)
-        .expect("Could not read the bindings file");
-    content = content.replace(
-        ")]\r\npub enum ",
-        ", EnumIter)]\r\npub enum ",
-    );
+    if USE_STRUM {
+        content = content.replacen(
+            ADDITIONAL_RAW_LINE_COMMENT,
+            "use strum_macros::EnumIter;",
+            1
+        );
+
+        content = content.replace(
+            ")]\r\npub enum ",
+            ", EnumIter)]\r\npub enum ",
+        );
+    }
+    // If there are still metawords left, delete them
+    content = content.replacen(ADDITIONAL_RAW_LINE_COMMENT, "", 1);
 
     // Write back to file
     let mut file = fs::File::create(&out_path)
