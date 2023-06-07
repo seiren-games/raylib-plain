@@ -127,6 +127,12 @@ pub fn fade(color: Color, alpha: f32) -> Color {
     }
 }
 
+pub fn set_exit_key(key: KeyboardKey) {
+    unsafe {
+        rl::SetExitKey(key as i32)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
