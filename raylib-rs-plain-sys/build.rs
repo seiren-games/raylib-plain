@@ -4,8 +4,9 @@ use std::fs::ReadDir;
 use std::fs;
 use std::io::Write;
 use std::path::PathBuf;
+use raylib_rs_plain_common as rl_common;
+use rl_common::RAYLIB_REPOSITORY_PATH;
 
-const RAYLIB_REPOSITORY_PATH: &str = "./native-src/raylib";
 const RAYLIB_VERSION: &str = "4.2.0";
 const ADDITIONAL_RAW_LINE_COMMENT: &str = "// ------------ Additional raw_line";
 const USE_STRUM: bool = true;

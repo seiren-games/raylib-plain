@@ -12,3 +12,4 @@ strum_macros = "0.24.3"
 [build-dependencies]
 bindgen = "0.63.0"
 cc = "1.0.79"
+raylib-rs-plain-common = { version = "0.1.0", path = "../raylib-rs-plain-common" }
