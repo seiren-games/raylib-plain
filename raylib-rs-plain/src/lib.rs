@@ -141,18 +141,8 @@ mod tests {
     #[test]
     fn main() {
         let text: &str = "Congrats! You created your first window!";
-        let bg_color: rl::Color = rl::Color {
-            r: 245,
-            g: 245,
-            b: 245,
-            a: 255,
-        };
-        let text_color: rl::Color = rl::Color {
-            r: 200,
-            g: 200,
-            b: 200,
-            a: 255,
-        };
+        let bg_color: rl::Color = color_define::RAYWHITE;
+        let text_color: rl::Color = color_define::LIGHTGRAY;
         init_window(800, 450, "raylib [core] example - basic window");
         assert_eq!(get_screen_width(), 800);
         assert_eq!(get_screen_height(), 450);

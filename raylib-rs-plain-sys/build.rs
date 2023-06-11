@@ -2,7 +2,6 @@ extern crate bindgen;
 
 use std::fs::ReadDir;
 use std::fs;
-use std::io::Write;
 use std::path::PathBuf;
 use raylib_rs_plain_common as rl_common;
 use rl_common::RAYLIB_REPOSITORY_PATH;
@@ -28,7 +27,7 @@ fn main() {
         // Finish the builder and generate the bindings.
         .generate()
         // Unwrap the Result and panic on failure.
-        .expect("Unable to generate bindings");
+        .unwrap();
 
     // Write the bindings to the $OUT_DIR/bindings.rs file.
     let out_path = PathBuf::from("src").join("lib.rs");
@@ -51,10 +50,7 @@ fn main() {
     content = content.replacen(ADDITIONAL_RAW_LINE_COMMENT, "", 1);
 
     // Write back to file
-    let mut file = fs::File::create(&out_path)
-        .expect("Could not open the bindings file");
-    file.write_all(content.as_bytes())
-        .expect("Could not write to the bindings file");
+    fs::write(&out_path, content).unwrap();
 }
 
 fn clone_raylib() {
@@ -69,7 +65,7 @@ fn clone_raylib() {
         .arg("https://github.com/raysan5/raylib.git")
         .arg(RAYLIB_REPOSITORY_PATH)
         .status()
-        .expect("Cannot clone raylib repository");
+        .unwrap();
 }
 
 fn build_raylib() {
