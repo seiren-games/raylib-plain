@@ -140,17 +140,13 @@ mod tests {
 
     #[test]
     fn main() {
-        let text: &str = "Congrats! You created your first window!";
-        let bg_color: rl::Color = color_define::RAYWHITE;
-        let text_color: rl::Color = color_define::LIGHTGRAY;
         init_window(800, 450, "raylib [core] example - basic window");
         assert_eq!(get_screen_width(), 800);
         assert_eq!(get_screen_height(), 450);
         while !window_should_close() {
             begin_drawing();
-            clear_background(bg_color);
-
-            draw_text(text, 190, 200, 20, text_color);
+            clear_background(color_define::RAYWHITE);
+            draw_text("Congrats! You created your first window!", 190, 200, 20, color_define::LIGHTGRAY);
             end_drawing();
         }
         close_window();
