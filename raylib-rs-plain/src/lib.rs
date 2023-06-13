@@ -8,13 +8,9 @@ pub use rl::Vector2;
 use std::ffi::CString;
 pub mod color_define;
 
-fn str_to_c_char(s: &str) -> *const ::std::os::raw::c_char {
-    let c_string: CString = CString::new(s).unwrap();
-    c_string.as_ptr()
-}
-
 pub fn init_window(width: ::std::os::raw::c_int, height: ::std::os::raw::c_int, title: &str) {
-    unsafe { rl::InitWindow(width, height, str_to_c_char(title)) }
+    let title: CString = CString::new(title).unwrap();
+    unsafe { rl::InitWindow(width, height, title.as_ptr()) }
 }
 
 pub fn window_should_close() -> bool {
@@ -36,7 +32,8 @@ pub fn draw_text(
     font_size: ::std::os::raw::c_int,
     color: rl::Color,
 ) {
-    unsafe { rl::DrawText(str_to_c_char(text), pos_x, pos_y, font_size, color) }
+    let text: CString = CString::new(text).unwrap();
+    unsafe { rl::DrawText(text.as_ptr(), pos_x, pos_y, font_size, color) }
 }
 
 pub fn draw_texture(
@@ -69,7 +66,9 @@ pub fn get_fps() -> ::std::os::raw::c_int {
 }
 
 pub fn load_texture(file_name: &str) -> Option<rl::Texture2D> {
-    let texture: rl::Texture2D = unsafe { rl::LoadTexture(str_to_c_char(file_name)) };
+    let file_name: CString = CString::new(file_name).unwrap();
+    let texture: rl::Texture2D;
+    texture = unsafe { rl::LoadTexture(file_name.as_ptr()) };
 
     return if texture.id == 0 {
         Option::None
@@ -107,7 +106,8 @@ pub fn measure_text(
     text: &str,
     font_size: ::std::os::raw::c_int,
 ) -> ::std::os::raw::c_int {
-    return unsafe { rl::MeasureText(str_to_c_char(text), font_size) };
+    let text: CString = CString::new(text).unwrap();
+    return unsafe { rl::MeasureText(text.as_ptr(), font_size) };
 }
 
 pub fn draw_rectangle(
