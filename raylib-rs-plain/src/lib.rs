@@ -7,6 +7,7 @@ pub use rl::Texture2D;
 pub use rl::Vector2;
 use std::ffi::CString;
 pub mod color_define;
+pub use color_define as color;
 
 pub fn init_window(width: ::std::os::raw::c_int, height: ::std::os::raw::c_int, title: &str) {
     let title: CString = CString::new(title).unwrap();
@@ -144,8 +145,8 @@ mod tests {
         assert_eq!(get_screen_height(), 450);
         while !window_should_close() {
             begin_drawing();
-            clear_background(color_define::RAYWHITE);
-            draw_text("Congrats! You created your first window!", 190, 200, 20, color_define::LIGHTGRAY);
+            clear_background(color::RAYWHITE);
+            draw_text("Congrats! You created your first window!", 190, 200, 20, color::LIGHTGRAY);
             end_drawing();
         }
         close_window();
