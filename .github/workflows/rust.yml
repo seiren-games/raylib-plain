@@ -16,7 +16,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - run: rustup toolchain install stable-gnu
+    # - run: rustup toolchain install stable-gnu
     - run: rustup default stable-gnu
     - run: rustup component add rustfmt
     - run: rustup show
