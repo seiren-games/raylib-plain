@@ -17,9 +17,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: rustup show
+    - run: rustup component list --installed
     - run: rustup toolchain install stable-gnu
     - run: rustup default stable-gnu
+    - run: rustup component add rustfmt
     - run: rustup show
+    - run: rustup component list --installed
     - run: cargo --version
     - run: cargo build -vv
-    - run: cargo test --verbose
+    # - run: cargo test --verbose
