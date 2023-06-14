@@ -20,7 +20,5 @@ jobs:
     - run: rustup toolchain install stable-gnu
     - run: rustup show
     - run: cargo --version
-    - name: Build
-      run: cargo build -vv
-    - name: Run tests
-      run: cargo test --verbose
+    - run: cargo build -vv
+    - run: cargo test --verbose
