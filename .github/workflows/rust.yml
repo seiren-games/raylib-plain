@@ -19,7 +19,7 @@ jobs:
     - run: rustup show
     - run: rustup component list --installed
     - run: rustup toolchain install stable-gnu
-    - run: rustup default stable-x86_64-pc-windows-gnu
+    - run: rustup default stable-gnu
     - run: rustup component add rustfmt
     - run: rustup show
     - run: rustup component list --installed
