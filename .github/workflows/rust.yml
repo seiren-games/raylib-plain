@@ -16,6 +16,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - run: rustup-init --version
     - run: rustup show
     - run: rustup component list --installed
     - run: rustup toolchain install stable-gnu
