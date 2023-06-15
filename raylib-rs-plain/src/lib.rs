@@ -151,4 +151,12 @@ mod tests {
         }
         close_window();
     }
+
+    #[test]
+    fn test_ci() {
+        set_target_fps(60);
+        dbg!(get_fps());
+        assert_eq!(get_random_value(0, 0), 0);
+        set_exit_key(KeyboardKey::KEY_NULL);
+    }
 }
