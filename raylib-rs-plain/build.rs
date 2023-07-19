@@ -3,6 +3,7 @@ use std::{fs, env};
 use raylib_rs_plain_common as rl_common;
 use regex::Regex;
 use std::process::Command;
+use convert_case::{Case, Casing};
 
 fn main() {
     let content = fs::read_to_string(
@@ -48,9 +49,10 @@ fn generate_function(raylib_api:&RaylibApi) {
              identifier.description,
        );
         let body = format!(
-            "pub fn {}() {} {{ {} }}",
-            identifier.name,
-            identifier.return_type,
+            "pub fn {}({}){} {{ {} }}\n",
+            identifier.name.to_case(Case::Snake),
+            "", // todo args
+            c_to_rs_return_type(identifier.return_type.as_str()),
             identifier.name,
         );
         raylib_function.push_str(&(comment + &body + "\n"));
@@ -60,6 +62,17 @@ fn generate_function(raylib_api:&RaylibApi) {
     Command::new("rustfmt")
         .arg("src/function.rs")
         .status().unwrap();
+}
+
+fn c_to_rs_return_type(c_type:&str) -> String {
+    let rs_type:Option<&str> =  match c_type {
+        "void" => Option::None,
+        _ => Option::Some(c_type),
+    };
+    return match rs_type {
+        Option::None => "".to_owned(),
+        Option::Some(val) => " -> ".to_owned() + val,
+    }
 }
 
 fn generate_define(raylib_api:&RaylibApi) {
