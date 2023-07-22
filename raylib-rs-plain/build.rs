@@ -35,7 +35,7 @@ struct FunctionIdentifier {
     name:String,
     description:String,
     #[serde(rename = "returnType")]
-    return_type:String, // todo ここをstringじゃなくてenumに高レベルに解析したいところ
+    return_type:String, // todo I want to parse this at a high level to enum, not string.
 }
 
 fn generate_function(raylib_api:&RaylibApi) {
