@@ -65,6 +65,42 @@ fn generate_function(raylib_api:&RaylibApi) {
 }
 
 fn c_to_rs_return_type(c_type:&str) -> String {
+    if c_type == "void" {
+        return "".to_owned();
+    }
+    let mut modifier:String = String::new();
+    let mut unprocessed_elements:Vec<&str> = Vec::new();
+    for type_element in c_type.split(" ") {
+        let mut asterisk_part:String = String::new();
+        for asterisk in type_element.chars() {
+            if asterisk != '*' {
+                continue;
+            }
+            if type_element.len() > 1 && !asterisk_part.contains("*") {
+                asterisk_part += "*mut ";
+                continue;
+            }
+            if c_type.contains("const") {
+                asterisk_part += "*";
+            } else {
+                asterisk_part += "*mut ";
+            }
+        }
+        if !asterisk_part.is_empty() {
+            modifier = asterisk_part + modifier.as_str();
+            continue;
+        }
+
+        if type_element == "const " {
+            modifier += type_element;
+            continue;
+        }
+
+        unprocessed_elements.push(type_element);
+    }
+
+    return " -> ".to_owned() + modifier.as_str() + unprocessed_elements.join(" ").as_str();
+
     let rs_type:Option<&str> =  match c_type {
         "void" => Option::None,
         _ => Option::Some(c_type),
