@@ -38,6 +38,14 @@ struct FunctionIdentifier {
     description:String,
     #[serde(rename = "returnType")]
     return_type:String, // todo I want to parse this at a high level to enum, not string.
+    params: Option<Vec<ArgIdentifier>>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct ArgIdentifier {
+    #[serde(rename = "type")]
+    arg_type:String,
+    name:String,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -60,13 +68,13 @@ fn generate_function(raylib_api:&RaylibApi) {
         let comment = format!(
             "/** {} */\n",
              identifier.description,
-       );
+        );
         let body = format!(
             "pub fn {}({}){} {{ {} }}\n",
             identifier.name.to_case(Case::Snake),
-            "", // todo args
+            generate_arg(&identifier.params),
             c_to_rs_return_type(identifier.return_type.as_str()),
-            generate_function_body(identifier.name.as_str()),
+            generate_function_body(identifier),
         );
         raylib_function.push_str(&(comment + &body + "\n"));
     }
@@ -77,8 +85,23 @@ fn generate_function(raylib_api:&RaylibApi) {
         .status().unwrap();
 }
 
-fn generate_function_body(function_name:&str) -> String {
-    return "unsafe { rl::".to_owned() + function_name + "() };"
+fn generate_arg(_params:&Option<Vec<ArgIdentifier>>) -> String {
+    if _params.is_none() {
+        return "".to_string();
+    }
+    let params = _params.as_ref().unwrap();
+    // うまいことargが出力されないのでこっからデバッグ
+    dbg!(&params[0].name);
+
+    let rs_params:Vec<String> = params.iter().map(
+        |param|
+        param.name.to_owned() + ":" + c_to_rs_type(param.arg_type.as_str()).as_str()
+    ).collect();
+    return rs_params.join(", ");
+}
+
+fn generate_function_body(function:&FunctionIdentifier) -> String {
+    return "unsafe { rl::".to_owned() + function.name.as_str() + "() };"
 }
 
 fn generate_header(raylib_api:&RaylibApi) -> Vec<String> {
@@ -108,10 +131,7 @@ fn generate_header(raylib_api:&RaylibApi) -> Vec<String> {
     return header;
 }
 
-fn c_to_rs_return_type(c_type:&str) -> String {
-    if c_type == "void" {
-        return "".to_owned();
-    }
+fn c_to_rs_type(c_type:&str) -> String {
     let mut modifier:String = String::new();
     let mut unprocessed_elements:Vec<&str> = Vec::new();
     for type_element in c_type.split(" ") {
@@ -136,8 +156,8 @@ fn c_to_rs_return_type(c_type:&str) -> String {
             continue;
         }
 
-        if type_element == "const " {
-            modifier += type_element;
+        if type_element == "const" {
+            modifier += (type_element.to_owned() + " ").as_str();
             continue;
         }
 
@@ -155,8 +175,15 @@ fn c_to_rs_return_type(c_type:&str) -> String {
         "void" => "c_void",
         _ => c_type_main.as_str(),
     };
+    return modifier + rust_type;
+}
 
-    return " -> ".to_owned() + modifier.as_str() + rust_type;
+fn c_to_rs_return_type(c_type:&str) -> String {
+    if c_type == "void" {
+        return "".to_owned();
+    }
+
+    return " -> ".to_owned() + c_to_rs_type(c_type).as_str();
 }
 
 fn generate_define(raylib_api:&RaylibApi) {
