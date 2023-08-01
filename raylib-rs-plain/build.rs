@@ -98,12 +98,15 @@ fn generate_arg(_params:&Option<Vec<ArgIdentifier>>) -> String {
     }
     let params = _params.as_ref().unwrap();
 
-    let rs_params:Vec<String> = params.iter().map(
+    let rs_params:Vec<String> = params.iter().filter_map(
         |param|
+        // Variable length arguments not supported in rust
         if param.name == "args" && param.arg_type == "..." {
-            param.arg_type.to_owned()
+            Option::None
         } else {
-            fix_reserved_keyword(param.name.to_case(Case::Snake).as_str()) + ":" + c_to_rs_type(param.arg_type.as_str()).as_str()
+            Option::Some(
+                fix_reserved_keyword(param.name.to_case(Case::Snake).as_str()) + ":" + c_to_rs_type(param.arg_type.as_str()).as_str()
+            )
         }
     ).collect();
     return rs_params.join(", ");
@@ -126,8 +129,14 @@ fn generate_function_body(function:&FunctionIdentifier, return_type:&str) -> Str
     let arg:String = match &function.params {
         Option::None => "".to_string(),
         Option::Some(params) => {
-        let rs_params:Vec<String> = params.iter().map(
-            |param| fix_reserved_keyword(param.name.to_case(Case::Snake).as_str())
+        let rs_params:Vec<String> = params.iter().filter_map(
+            |param|
+            // Variable length arguments not supported in rust
+            if param.name == "args" && param.arg_type == "..." {
+                Option::None
+            } else {
+                Option::Some(fix_reserved_keyword(param.name.to_case(Case::Snake).as_str()))
+            }
         ).collect();
         rs_params.join(", ")
         },
