@@ -22,6 +22,7 @@ struct RaylibApi {
     functions: Vec<FunctionIdentifier>,
     structs: Vec<StructIdentifier>,
     aliases: Vec<AliaseIdentifier>,
+    callbacks: Vec<CallbackIdentifier>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -58,6 +59,11 @@ struct AliaseIdentifier {
     name:String,
 }
 
+#[derive(Serialize, Deserialize)]
+struct CallbackIdentifier {
+    name:String,
+}
+
 fn generate_function(raylib_api:&RaylibApi) {
     let mut raylib_function = String::new();
     let pkg_name = env::var("CARGO_PKG_NAME").unwrap();
@@ -69,12 +75,13 @@ fn generate_function(raylib_api:&RaylibApi) {
             "/** {} */\n",
              identifier.description,
         );
+        let return_type = c_to_rs_return_type(identifier.return_type.as_str());
         let body = format!(
             "pub fn {}({}){} {{ {} }}\n",
             identifier.name.to_case(Case::Snake),
             generate_arg(&identifier.params),
-            c_to_rs_return_type(identifier.return_type.as_str()),
-            generate_function_body(identifier),
+            return_type,
+            generate_function_body(identifier, return_type.as_str()),
         );
         raylib_function.push_str(&(comment + &body + "\n"));
     }
@@ -90,18 +97,47 @@ fn generate_arg(_params:&Option<Vec<ArgIdentifier>>) -> String {
         return "".to_string();
     }
     let params = _params.as_ref().unwrap();
-    // うまいことargが出力されないのでこっからデバッグ
-    dbg!(&params[0].name);
 
     let rs_params:Vec<String> = params.iter().map(
         |param|
-        param.name.to_owned() + ":" + c_to_rs_type(param.arg_type.as_str()).as_str()
+        if param.name == "args" && param.arg_type == "..." {
+            param.arg_type.to_owned()
+        } else {
+            fix_reserved_keyword(param.name.to_case(Case::Snake).as_str()) + ":" + c_to_rs_type(param.arg_type.as_str()).as_str()
+        }
     ).collect();
     return rs_params.join(", ");
 }
 
-fn generate_function_body(function:&FunctionIdentifier) -> String {
-    return "unsafe { rl::".to_owned() + function.name.as_str() + "() };"
+fn fix_reserved_keyword(name:&str) -> String {
+    return match name {
+        "box" => "box_".to_owned(),
+        "type" => "type_".to_owned(),
+        _ => name.to_owned(),
+    }
+}
+
+fn generate_function_body(function:&FunctionIdentifier, return_type:&str) -> String {
+    let mut body = String::new();
+    if return_type != "" {
+        body += "return ";
+    };
+
+    let arg:String = match &function.params {
+        Option::None => "".to_string(),
+        Option::Some(params) => {
+        let rs_params:Vec<String> = params.iter().map(
+            |param| fix_reserved_keyword(param.name.to_case(Case::Snake).as_str())
+        ).collect();
+        rs_params.join(", ")
+        },
+    };
+
+    body += ("unsafe { rl::".to_owned()
+        + function.name.as_str()
+        + "(" + arg.as_str() + ") };"
+    ).as_str();
+    return body;
 }
 
 fn generate_header(raylib_api:&RaylibApi) -> Vec<String> {
@@ -109,9 +145,11 @@ fn generate_header(raylib_api:&RaylibApi) -> Vec<String> {
         "use raylib_rs_plain_sys as rl;".to_string(),
         "use std::ffi::CString;".to_string(),
         "use ::std::os::raw::c_int;".to_string(),
+        "use ::std::os::raw::c_uint;".to_string(),
         "use ::std::os::raw::c_long;".to_string(),
         "use ::std::os::raw::c_void;".to_string(),
         "use ::std::os::raw::c_uchar;".to_string(),
+        "use ::std::os::raw::c_char;".to_string(),
         "\n".to_string(),
     ];
 
@@ -126,6 +164,12 @@ fn generate_header(raylib_api:&RaylibApi) -> Vec<String> {
         "pub use rl::".to_owned() + &identifier.name + ";"
     ).collect();
     header.extend(aliases);
+
+    let callbacks:Vec<String> = raylib_api.callbacks.iter().map(
+        |identifier|
+        "pub use rl::".to_owned() + &identifier.name + ";"
+    ).collect();
+    header.extend(callbacks);
 
     header.push("\n".to_string());
     return header;
@@ -173,6 +217,7 @@ fn c_to_rs_type(c_type:&str) -> String {
         "float" => "f32",
         "double" => "f64",
         "void" => "c_void",
+        "char" => "c_char",
         _ => c_type_main.as_str(),
     };
     return modifier + rust_type;
