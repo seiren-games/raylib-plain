@@ -5,16 +5,18 @@
 #![allow(non_snake_case)]
 use strum_macros::EnumIter;
 
-pub const __GNUC_VA_LIST: u32 = 1;
-pub const RAYLIB_VERSION: &[u8; 4usize] = b"4.2\0";
+pub const RAYLIB_VERSION_MAJOR: u32 = 4;
+pub const RAYLIB_VERSION_MINOR: u32 = 5;
+pub const RAYLIB_VERSION_PATCH: u32 = 0;
+pub const RAYLIB_VERSION: &[u8; 4usize] = b"4.5\0";
 pub const PI: f64 = 3.141592653589793;
 pub const DEG2RAD: f64 = 0.017453292519943295;
 pub const RAD2DEG: f64 = 57.29577951308232;
 pub const __bool_true_false_are_defined: u32 = 1;
 pub const true_: u32 = 1;
 pub const false_: u32 = 0;
-pub type va_list = __builtin_va_list;
 pub type __gnuc_va_list = __builtin_va_list;
+pub type va_list = __builtin_va_list;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct Vector2 {
@@ -2708,6 +2710,7 @@ pub enum BlendMode {
     BLEND_SUBTRACT_COLORS = 4,
     BLEND_ALPHA_PREMULTIPLY = 5,
     BLEND_CUSTOM = 6,
+    BLEND_CUSTOM_SEPARATE = 7,
 }
 #[repr(i32)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
@@ -2832,6 +2835,9 @@ extern "C" {
 }
 extern "C" {
     pub fn SetWindowIcon(image: Image);
+}
+extern "C" {
+    pub fn SetWindowIcons(images: *mut Image, count: ::std::os::raw::c_int);
 }
 extern "C" {
     pub fn SetWindowTitle(title: *const ::std::os::raw::c_char);
@@ -3013,6 +3019,9 @@ extern "C" {
     ) -> Shader;
 }
 extern "C" {
+    pub fn IsShaderReady(shader: Shader) -> bool;
+}
+extern "C" {
     pub fn GetShaderLocation(
         shader: Shader,
         uniformName: *const ::std::os::raw::c_char,
@@ -3114,12 +3123,12 @@ extern "C" {
     pub fn SetTraceLogLevel(logLevel: ::std::os::raw::c_int);
 }
 extern "C" {
-    pub fn MemAlloc(size: ::std::os::raw::c_int) -> *mut ::std::os::raw::c_void;
+    pub fn MemAlloc(size: ::std::os::raw::c_uint) -> *mut ::std::os::raw::c_void;
 }
 extern "C" {
     pub fn MemRealloc(
         ptr: *mut ::std::os::raw::c_void,
-        size: ::std::os::raw::c_int,
+        size: ::std::os::raw::c_uint,
     ) -> *mut ::std::os::raw::c_void;
 }
 extern "C" {
@@ -3161,7 +3170,7 @@ extern "C" {
 }
 extern "C" {
     pub fn ExportDataAsCode(
-        data: *const ::std::os::raw::c_char,
+        data: *const ::std::os::raw::c_uchar,
         size: ::std::os::raw::c_uint,
         fileName: *const ::std::os::raw::c_char,
     ) -> bool;
@@ -3426,29 +3435,10 @@ extern "C" {
     pub fn GetGesturePinchAngle() -> f32;
 }
 extern "C" {
-    pub fn SetCameraMode(camera: Camera, mode: ::std::os::raw::c_int);
+    pub fn UpdateCamera(camera: *mut Camera, mode: ::std::os::raw::c_int);
 }
 extern "C" {
-    pub fn UpdateCamera(camera: *mut Camera);
-}
-extern "C" {
-    pub fn SetCameraPanControl(keyPan: ::std::os::raw::c_int);
-}
-extern "C" {
-    pub fn SetCameraAltControl(keyAlt: ::std::os::raw::c_int);
-}
-extern "C" {
-    pub fn SetCameraSmoothZoomControl(keySmoothZoom: ::std::os::raw::c_int);
-}
-extern "C" {
-    pub fn SetCameraMoveControls(
-        keyFront: ::std::os::raw::c_int,
-        keyBack: ::std::os::raw::c_int,
-        keyRight: ::std::os::raw::c_int,
-        keyLeft: ::std::os::raw::c_int,
-        keyUp: ::std::os::raw::c_int,
-        keyDown: ::std::os::raw::c_int,
-    );
+    pub fn UpdateCameraPro(camera: *mut Camera, movement: Vector3, rotation: Vector3, zoom: f32);
 }
 extern "C" {
     pub fn SetShapesTexture(texture: Texture2D, source: Rectangle);
@@ -3732,6 +3722,13 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
+    pub fn CheckCollisionPointPoly(
+        point: Vector2,
+        points: *mut Vector2,
+        pointCount: ::std::os::raw::c_int,
+    ) -> bool;
+}
+extern "C" {
     pub fn CheckCollisionLines(
         startPos1: Vector2,
         endPos1: Vector2,
@@ -3781,6 +3778,9 @@ extern "C" {
 }
 extern "C" {
     pub fn LoadImageFromScreen() -> Image;
+}
+extern "C" {
+    pub fn IsImageReady(image: Image) -> bool;
 }
 extern "C" {
     pub fn UnloadImage(image: Image);
@@ -3841,10 +3841,26 @@ extern "C" {
     ) -> Image;
 }
 extern "C" {
+    pub fn GenImagePerlinNoise(
+        width: ::std::os::raw::c_int,
+        height: ::std::os::raw::c_int,
+        offsetX: ::std::os::raw::c_int,
+        offsetY: ::std::os::raw::c_int,
+        scale: f32,
+    ) -> Image;
+}
+extern "C" {
     pub fn GenImageCellular(
         width: ::std::os::raw::c_int,
         height: ::std::os::raw::c_int,
         tileSize: ::std::os::raw::c_int,
+    ) -> Image;
+}
+extern "C" {
+    pub fn GenImageText(
+        width: ::std::os::raw::c_int,
+        height: ::std::os::raw::c_int,
+        text: *const ::std::os::raw::c_char,
     ) -> Image;
 }
 extern "C" {
@@ -3889,6 +3905,9 @@ extern "C" {
 }
 extern "C" {
     pub fn ImageAlphaPremultiply(image: *mut Image);
+}
+extern "C" {
+    pub fn ImageBlurGaussian(image: *mut Image, blurSize: ::std::os::raw::c_int);
 }
 extern "C" {
     pub fn ImageResize(
@@ -4024,6 +4043,23 @@ extern "C" {
     );
 }
 extern "C" {
+    pub fn ImageDrawCircleLines(
+        dst: *mut Image,
+        centerX: ::std::os::raw::c_int,
+        centerY: ::std::os::raw::c_int,
+        radius: ::std::os::raw::c_int,
+        color: Color,
+    );
+}
+extern "C" {
+    pub fn ImageDrawCircleLinesV(
+        dst: *mut Image,
+        center: Vector2,
+        radius: ::std::os::raw::c_int,
+        color: Color,
+    );
+}
+extern "C" {
     pub fn ImageDrawRectangle(
         dst: *mut Image,
         posX: ::std::os::raw::c_int,
@@ -4093,7 +4129,13 @@ extern "C" {
     ) -> RenderTexture2D;
 }
 extern "C" {
+    pub fn IsTextureReady(texture: Texture2D) -> bool;
+}
+extern "C" {
     pub fn UnloadTexture(texture: Texture2D);
+}
+extern "C" {
+    pub fn IsRenderTextureReady(target: RenderTexture2D) -> bool;
 }
 extern "C" {
     pub fn UnloadRenderTexture(target: RenderTexture2D);
@@ -4141,26 +4183,6 @@ extern "C" {
     pub fn DrawTextureRec(texture: Texture2D, source: Rectangle, position: Vector2, tint: Color);
 }
 extern "C" {
-    pub fn DrawTextureQuad(
-        texture: Texture2D,
-        tiling: Vector2,
-        offset: Vector2,
-        quad: Rectangle,
-        tint: Color,
-    );
-}
-extern "C" {
-    pub fn DrawTextureTiled(
-        texture: Texture2D,
-        source: Rectangle,
-        dest: Rectangle,
-        origin: Vector2,
-        rotation: f32,
-        scale: f32,
-        tint: Color,
-    );
-}
-extern "C" {
     pub fn DrawTexturePro(
         texture: Texture2D,
         source: Rectangle,
@@ -4181,16 +4203,6 @@ extern "C" {
     );
 }
 extern "C" {
-    pub fn DrawTexturePoly(
-        texture: Texture2D,
-        center: Vector2,
-        points: *mut Vector2,
-        texcoords: *mut Vector2,
-        pointCount: ::std::os::raw::c_int,
-        tint: Color,
-    );
-}
-extern "C" {
     pub fn Fade(color: Color, alpha: f32) -> Color;
 }
 extern "C" {
@@ -4207,6 +4219,15 @@ extern "C" {
 }
 extern "C" {
     pub fn ColorFromHSV(hue: f32, saturation: f32, value: f32) -> Color;
+}
+extern "C" {
+    pub fn ColorTint(color: Color, tint: Color) -> Color;
+}
+extern "C" {
+    pub fn ColorBrightness(color: Color, factor: f32) -> Color;
+}
+extern "C" {
+    pub fn ColorContrast(color: Color, contrast: f32) -> Color;
 }
 extern "C" {
     pub fn ColorAlpha(color: Color, alpha: f32) -> Color;
@@ -4263,6 +4284,9 @@ extern "C" {
         fontChars: *mut ::std::os::raw::c_int,
         glyphCount: ::std::os::raw::c_int,
     ) -> Font;
+}
+extern "C" {
+    pub fn IsFontReady(font: Font) -> bool;
 }
 extern "C" {
     pub fn LoadFontData(
@@ -4371,6 +4395,15 @@ extern "C" {
     pub fn GetGlyphAtlasRec(font: Font, codepoint: ::std::os::raw::c_int) -> Rectangle;
 }
 extern "C" {
+    pub fn LoadUTF8(
+        codepoints: *const ::std::os::raw::c_int,
+        length: ::std::os::raw::c_int,
+    ) -> *mut ::std::os::raw::c_char;
+}
+extern "C" {
+    pub fn UnloadUTF8(text: *mut ::std::os::raw::c_char);
+}
+extern "C" {
     pub fn LoadCodepoints(
         text: *const ::std::os::raw::c_char,
         count: *mut ::std::os::raw::c_int,
@@ -4385,20 +4418,26 @@ extern "C" {
 extern "C" {
     pub fn GetCodepoint(
         text: *const ::std::os::raw::c_char,
-        bytesProcessed: *mut ::std::os::raw::c_int,
+        codepointSize: *mut ::std::os::raw::c_int,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn GetCodepointNext(
+        text: *const ::std::os::raw::c_char,
+        codepointSize: *mut ::std::os::raw::c_int,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn GetCodepointPrevious(
+        text: *const ::std::os::raw::c_char,
+        codepointSize: *mut ::std::os::raw::c_int,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
     pub fn CodepointToUTF8(
         codepoint: ::std::os::raw::c_int,
-        byteSize: *mut ::std::os::raw::c_int,
+        utf8Size: *mut ::std::os::raw::c_int,
     ) -> *const ::std::os::raw::c_char;
-}
-extern "C" {
-    pub fn TextCodepointsToUTF8(
-        codepoints: *const ::std::os::raw::c_int,
-        length: ::std::os::raw::c_int,
-    ) -> *mut ::std::os::raw::c_char;
 }
 extern "C" {
     pub fn TextCopy(
@@ -4516,27 +4555,6 @@ extern "C" {
     pub fn DrawCubeWiresV(position: Vector3, size: Vector3, color: Color);
 }
 extern "C" {
-    pub fn DrawCubeTexture(
-        texture: Texture2D,
-        position: Vector3,
-        width: f32,
-        height: f32,
-        length: f32,
-        color: Color,
-    );
-}
-extern "C" {
-    pub fn DrawCubeTextureRec(
-        texture: Texture2D,
-        source: Rectangle,
-        position: Vector3,
-        width: f32,
-        height: f32,
-        length: f32,
-        color: Color,
-    );
-}
-extern "C" {
     pub fn DrawSphere(centerPos: Vector3, radius: f32, color: Color);
 }
 extern "C" {
@@ -4598,6 +4616,26 @@ extern "C" {
     );
 }
 extern "C" {
+    pub fn DrawCapsule(
+        startPos: Vector3,
+        endPos: Vector3,
+        radius: f32,
+        slices: ::std::os::raw::c_int,
+        rings: ::std::os::raw::c_int,
+        color: Color,
+    );
+}
+extern "C" {
+    pub fn DrawCapsuleWires(
+        startPos: Vector3,
+        endPos: Vector3,
+        radius: f32,
+        slices: ::std::os::raw::c_int,
+        rings: ::std::os::raw::c_int,
+        color: Color,
+    );
+}
+extern "C" {
     pub fn DrawPlane(centerPos: Vector3, size: Vector2, color: Color);
 }
 extern "C" {
@@ -4613,10 +4651,10 @@ extern "C" {
     pub fn LoadModelFromMesh(mesh: Mesh) -> Model;
 }
 extern "C" {
-    pub fn UnloadModel(model: Model);
+    pub fn IsModelReady(model: Model) -> bool;
 }
 extern "C" {
-    pub fn UnloadModelKeepMeshes(model: Model);
+    pub fn UnloadModel(model: Model);
 }
 extern "C" {
     pub fn GetModelBoundingBox(model: Model) -> BoundingBox;
@@ -4783,6 +4821,9 @@ extern "C" {
     pub fn LoadMaterialDefault() -> Material;
 }
 extern "C" {
+    pub fn IsMaterialReady(material: Material) -> bool;
+}
+extern "C" {
     pub fn UnloadMaterial(material: Material);
 }
 extern "C" {
@@ -4879,10 +4920,16 @@ extern "C" {
     ) -> Wave;
 }
 extern "C" {
+    pub fn IsWaveReady(wave: Wave) -> bool;
+}
+extern "C" {
     pub fn LoadSound(fileName: *const ::std::os::raw::c_char) -> Sound;
 }
 extern "C" {
     pub fn LoadSoundFromWave(wave: Wave) -> Sound;
+}
+extern "C" {
+    pub fn IsSoundReady(sound: Sound) -> bool;
 }
 extern "C" {
     pub fn UpdateSound(
@@ -4914,15 +4961,6 @@ extern "C" {
 }
 extern "C" {
     pub fn ResumeSound(sound: Sound);
-}
-extern "C" {
-    pub fn PlaySoundMulti(sound: Sound);
-}
-extern "C" {
-    pub fn StopSoundMulti();
-}
-extern "C" {
-    pub fn GetSoundsPlaying() -> ::std::os::raw::c_int;
 }
 extern "C" {
     pub fn IsSoundPlaying(sound: Sound) -> bool;
@@ -4971,6 +5009,9 @@ extern "C" {
     ) -> Music;
 }
 extern "C" {
+    pub fn IsMusicReady(music: Music) -> bool;
+}
+extern "C" {
     pub fn UnloadMusicStream(music: Music);
 }
 extern "C" {
@@ -5015,6 +5056,9 @@ extern "C" {
         sampleSize: ::std::os::raw::c_uint,
         channels: ::std::os::raw::c_uint,
     ) -> AudioStream;
+}
+extern "C" {
+    pub fn IsAudioStreamReady(stream: AudioStream) -> bool;
 }
 extern "C" {
     pub fn UnloadAudioStream(stream: AudioStream);
@@ -5064,5 +5108,11 @@ extern "C" {
 }
 extern "C" {
     pub fn DetachAudioStreamProcessor(stream: AudioStream, processor: AudioCallback);
+}
+extern "C" {
+    pub fn AttachAudioMixedProcessor(processor: AudioCallback);
+}
+extern "C" {
+    pub fn DetachAudioMixedProcessor(processor: AudioCallback);
 }
 pub type __builtin_va_list = *mut ::std::os::raw::c_char;

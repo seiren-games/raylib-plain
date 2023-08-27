@@ -6,7 +6,7 @@ use std::path::PathBuf;
 use raylib_rs_plain_common as rl_common;
 use rl_common::RAYLIB_REPOSITORY_PATH;
 
-const RAYLIB_VERSION: &str = "4.2.0";
+const RAYLIB_VERSION: &str = "4.5.0";
 const ADDITIONAL_RAW_LINE_COMMENT: &str = "// ------------ Additional raw_line";
 const USE_STRUM: bool = true;
 
@@ -55,6 +55,7 @@ fn main() {
 
 fn clone_raylib() {
     // TODO: Don't clone if the folder exists.
+    // TODO: If the tag(RAYLIB_VERSION) has changed, switch it.
     // - No need to pull. Because it is a revision specification, it never changes.
     std::process::Command::new("git")
         .arg("clone")
