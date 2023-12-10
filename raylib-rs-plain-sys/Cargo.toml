@@ -6,10 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-strum = "0.24.1"
-strum_macros = "0.24.3"
+strum = "0.25"
+strum_macros = "0.25"
 
 [build-dependencies]
-bindgen = "0.63.0"
+bindgen = "0.69"
 cc = "1.0.79"
 raylib-rs-plain-common = { version = "0.1.0", path = "../raylib-rs-plain-common" }
