@@ -1,2 +1,3 @@
 [workspace]
 members = ["raylib-rs-plain-sys", "raylib-rs-plain", "raylib-rs-plain-common"]
+resolver = "2"
