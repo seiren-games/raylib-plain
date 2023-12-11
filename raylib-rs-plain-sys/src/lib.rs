@@ -5,10 +5,10 @@
 #![allow(non_snake_case)]
 use strum_macros::EnumIter;
 
-pub const RAYLIB_VERSION_MAJOR: u32 = 4;
-pub const RAYLIB_VERSION_MINOR: u32 = 5;
+pub const RAYLIB_VERSION_MAJOR: u32 = 5;
+pub const RAYLIB_VERSION_MINOR: u32 = 0;
 pub const RAYLIB_VERSION_PATCH: u32 = 0;
-pub const RAYLIB_VERSION: &[u8; 4] = b"4.5\0";
+pub const RAYLIB_VERSION: &[u8; 4] = b"5.0\0";
 pub const PI: f64 = 3.141592653589793;
 pub const DEG2RAD: f64 = 0.017453292519943295;
 pub const RAD2DEG: f64 = 57.29577951308232;
@@ -1607,6 +1607,7 @@ pub struct ModelAnimation {
     pub frameCount: ::std::os::raw::c_int,
     pub bones: *mut BoneInfo,
     pub framePoses: *mut *mut Transform,
+    pub name: [::std::os::raw::c_char; 32usize],
 }
 #[test]
 fn bindgen_test_layout_ModelAnimation() {
@@ -1614,7 +1615,7 @@ fn bindgen_test_layout_ModelAnimation() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::std::mem::size_of::<ModelAnimation>(),
-        24usize,
+        56usize,
         concat!("Size of: ", stringify!(ModelAnimation))
     );
     assert_eq!(
@@ -1660,6 +1661,16 @@ fn bindgen_test_layout_ModelAnimation() {
             stringify!(ModelAnimation),
             "::",
             stringify!(framePoses)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(ModelAnimation),
+            "::",
+            stringify!(name)
         )
     );
 }
@@ -2369,6 +2380,110 @@ fn bindgen_test_layout_FilePathList() {
         )
     );
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct AutomationEvent {
+    pub frame: ::std::os::raw::c_uint,
+    pub type_: ::std::os::raw::c_uint,
+    pub params: [::std::os::raw::c_int; 4usize],
+}
+#[test]
+fn bindgen_test_layout_AutomationEvent() {
+    const UNINIT: ::std::mem::MaybeUninit<AutomationEvent> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<AutomationEvent>(),
+        24usize,
+        concat!("Size of: ", stringify!(AutomationEvent))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<AutomationEvent>(),
+        4usize,
+        concat!("Alignment of ", stringify!(AutomationEvent))
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).frame) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(AutomationEvent),
+            "::",
+            stringify!(frame)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).type_) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(AutomationEvent),
+            "::",
+            stringify!(type_)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).params) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(AutomationEvent),
+            "::",
+            stringify!(params)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct AutomationEventList {
+    pub capacity: ::std::os::raw::c_uint,
+    pub count: ::std::os::raw::c_uint,
+    pub events: *mut AutomationEvent,
+}
+#[test]
+fn bindgen_test_layout_AutomationEventList() {
+    const UNINIT: ::std::mem::MaybeUninit<AutomationEventList> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<AutomationEventList>(),
+        16usize,
+        concat!("Size of: ", stringify!(AutomationEventList))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<AutomationEventList>(),
+        8usize,
+        concat!("Alignment of ", stringify!(AutomationEventList))
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).capacity) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(AutomationEventList),
+            "::",
+            stringify!(capacity)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(AutomationEventList),
+            "::",
+            stringify!(count)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).events) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(AutomationEventList),
+            "::",
+            stringify!(events)
+        )
+    );
+}
 #[repr(i32)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
 pub enum ConfigFlags {
@@ -2385,6 +2500,7 @@ pub enum ConfigFlags {
     FLAG_WINDOW_TRANSPARENT = 16,
     FLAG_WINDOW_HIGHDPI = 8192,
     FLAG_WINDOW_MOUSE_PASSTHROUGH = 16384,
+    FLAG_BORDERLESS_WINDOWED_MODE = 32768,
     FLAG_MSAA_4X_HINT = 32,
     FLAG_INTERLACED_HINT = 65536,
 }
@@ -2653,17 +2769,20 @@ pub enum PixelFormat {
     PIXELFORMAT_UNCOMPRESSED_R32 = 8,
     PIXELFORMAT_UNCOMPRESSED_R32G32B32 = 9,
     PIXELFORMAT_UNCOMPRESSED_R32G32B32A32 = 10,
-    PIXELFORMAT_COMPRESSED_DXT1_RGB = 11,
-    PIXELFORMAT_COMPRESSED_DXT1_RGBA = 12,
-    PIXELFORMAT_COMPRESSED_DXT3_RGBA = 13,
-    PIXELFORMAT_COMPRESSED_DXT5_RGBA = 14,
-    PIXELFORMAT_COMPRESSED_ETC1_RGB = 15,
-    PIXELFORMAT_COMPRESSED_ETC2_RGB = 16,
-    PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA = 17,
-    PIXELFORMAT_COMPRESSED_PVRT_RGB = 18,
-    PIXELFORMAT_COMPRESSED_PVRT_RGBA = 19,
-    PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA = 20,
-    PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA = 21,
+    PIXELFORMAT_UNCOMPRESSED_R16 = 11,
+    PIXELFORMAT_UNCOMPRESSED_R16G16B16 = 12,
+    PIXELFORMAT_UNCOMPRESSED_R16G16B16A16 = 13,
+    PIXELFORMAT_COMPRESSED_DXT1_RGB = 14,
+    PIXELFORMAT_COMPRESSED_DXT1_RGBA = 15,
+    PIXELFORMAT_COMPRESSED_DXT3_RGBA = 16,
+    PIXELFORMAT_COMPRESSED_DXT5_RGBA = 17,
+    PIXELFORMAT_COMPRESSED_ETC1_RGB = 18,
+    PIXELFORMAT_COMPRESSED_ETC2_RGB = 19,
+    PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA = 20,
+    PIXELFORMAT_COMPRESSED_PVRT_RGB = 21,
+    PIXELFORMAT_COMPRESSED_PVRT_RGBA = 22,
+    PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA = 23,
+    PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA = 24,
 }
 #[repr(i32)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, EnumIter)]
@@ -2759,14 +2878,14 @@ pub type TraceLogCallback = ::std::option::Option<
 pub type LoadFileDataCallback = ::std::option::Option<
     unsafe extern "C" fn(
         fileName: *const ::std::os::raw::c_char,
-        bytesRead: *mut ::std::os::raw::c_uint,
+        dataSize: *mut ::std::os::raw::c_int,
     ) -> *mut ::std::os::raw::c_uchar,
 >;
 pub type SaveFileDataCallback = ::std::option::Option<
     unsafe extern "C" fn(
         fileName: *const ::std::os::raw::c_char,
         data: *mut ::std::os::raw::c_void,
-        bytesToWrite: ::std::os::raw::c_uint,
+        dataSize: ::std::os::raw::c_int,
     ) -> bool,
 >;
 pub type LoadFileTextCallback = ::std::option::Option<
@@ -2786,10 +2905,10 @@ extern "C" {
     );
 }
 extern "C" {
-    pub fn WindowShouldClose() -> bool;
+    pub fn CloseWindow();
 }
 extern "C" {
-    pub fn CloseWindow();
+    pub fn WindowShouldClose() -> bool;
 }
 extern "C" {
     pub fn IsWindowReady() -> bool;
@@ -2825,6 +2944,9 @@ extern "C" {
     pub fn ToggleFullscreen();
 }
 extern "C" {
+    pub fn ToggleBorderlessWindowed();
+}
+extern "C" {
     pub fn MaximizeWindow();
 }
 extern "C" {
@@ -2852,10 +2974,16 @@ extern "C" {
     pub fn SetWindowMinSize(width: ::std::os::raw::c_int, height: ::std::os::raw::c_int);
 }
 extern "C" {
+    pub fn SetWindowMaxSize(width: ::std::os::raw::c_int, height: ::std::os::raw::c_int);
+}
+extern "C" {
     pub fn SetWindowSize(width: ::std::os::raw::c_int, height: ::std::os::raw::c_int);
 }
 extern "C" {
     pub fn SetWindowOpacity(opacity: f32);
+}
+extern "C" {
+    pub fn SetWindowFocused();
 }
 extern "C" {
     pub fn GetWindowHandle() -> *mut ::std::os::raw::c_void;
@@ -2916,15 +3044,6 @@ extern "C" {
 }
 extern "C" {
     pub fn DisableEventWaiting();
-}
-extern "C" {
-    pub fn SwapScreenBuffer();
-}
-extern "C" {
-    pub fn PollInputEvents();
-}
-extern "C" {
-    pub fn WaitTime(seconds: f64);
 }
 extern "C" {
     pub fn ShowCursor();
@@ -3093,13 +3212,25 @@ extern "C" {
     pub fn SetTargetFPS(fps: ::std::os::raw::c_int);
 }
 extern "C" {
-    pub fn GetFPS() -> ::std::os::raw::c_int;
-}
-extern "C" {
     pub fn GetFrameTime() -> f32;
 }
 extern "C" {
     pub fn GetTime() -> f64;
+}
+extern "C" {
+    pub fn GetFPS() -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn SwapScreenBuffer();
+}
+extern "C" {
+    pub fn PollInputEvents();
+}
+extern "C" {
+    pub fn WaitTime(seconds: f64);
+}
+extern "C" {
+    pub fn SetRandomSeed(seed: ::std::os::raw::c_uint);
 }
 extern "C" {
     pub fn GetRandomValue(
@@ -3108,13 +3239,23 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
-    pub fn SetRandomSeed(seed: ::std::os::raw::c_uint);
+    pub fn LoadRandomSequence(
+        count: ::std::os::raw::c_uint,
+        min: ::std::os::raw::c_int,
+        max: ::std::os::raw::c_int,
+    ) -> *mut ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn UnloadRandomSequence(sequence: *mut ::std::os::raw::c_int);
 }
 extern "C" {
     pub fn TakeScreenshot(fileName: *const ::std::os::raw::c_char);
 }
 extern "C" {
     pub fn SetConfigFlags(flags: ::std::os::raw::c_uint);
+}
+extern "C" {
+    pub fn OpenURL(url: *const ::std::os::raw::c_char);
 }
 extern "C" {
     pub fn TraceLog(logLevel: ::std::os::raw::c_int, text: *const ::std::os::raw::c_char, ...);
@@ -3135,9 +3276,6 @@ extern "C" {
     pub fn MemFree(ptr: *mut ::std::os::raw::c_void);
 }
 extern "C" {
-    pub fn OpenURL(url: *const ::std::os::raw::c_char);
-}
-extern "C" {
     pub fn SetTraceLogCallback(callback: TraceLogCallback);
 }
 extern "C" {
@@ -3155,7 +3293,7 @@ extern "C" {
 extern "C" {
     pub fn LoadFileData(
         fileName: *const ::std::os::raw::c_char,
-        bytesRead: *mut ::std::os::raw::c_uint,
+        dataSize: *mut ::std::os::raw::c_int,
     ) -> *mut ::std::os::raw::c_uchar;
 }
 extern "C" {
@@ -3165,13 +3303,13 @@ extern "C" {
     pub fn SaveFileData(
         fileName: *const ::std::os::raw::c_char,
         data: *mut ::std::os::raw::c_void,
-        bytesToWrite: ::std::os::raw::c_uint,
+        dataSize: ::std::os::raw::c_int,
     ) -> bool;
 }
 extern "C" {
     pub fn ExportDataAsCode(
         data: *const ::std::os::raw::c_uchar,
-        size: ::std::os::raw::c_uint,
+        dataSize: ::std::os::raw::c_int,
         fileName: *const ::std::os::raw::c_char,
     ) -> bool;
 }
@@ -3290,7 +3428,37 @@ extern "C" {
     ) -> *mut ::std::os::raw::c_uchar;
 }
 extern "C" {
+    pub fn LoadAutomationEventList(fileName: *const ::std::os::raw::c_char) -> AutomationEventList;
+}
+extern "C" {
+    pub fn UnloadAutomationEventList(list: *mut AutomationEventList);
+}
+extern "C" {
+    pub fn ExportAutomationEventList(
+        list: AutomationEventList,
+        fileName: *const ::std::os::raw::c_char,
+    ) -> bool;
+}
+extern "C" {
+    pub fn SetAutomationEventList(list: *mut AutomationEventList);
+}
+extern "C" {
+    pub fn SetAutomationEventBaseFrame(frame: ::std::os::raw::c_int);
+}
+extern "C" {
+    pub fn StartAutomationEventRecording();
+}
+extern "C" {
+    pub fn StopAutomationEventRecording();
+}
+extern "C" {
+    pub fn PlayAutomationEvent(event: AutomationEvent);
+}
+extern "C" {
     pub fn IsKeyPressed(key: ::std::os::raw::c_int) -> bool;
+}
+extern "C" {
+    pub fn IsKeyPressedRepeat(key: ::std::os::raw::c_int) -> bool;
 }
 extern "C" {
     pub fn IsKeyDown(key: ::std::os::raw::c_int) -> bool;
@@ -3302,13 +3470,13 @@ extern "C" {
     pub fn IsKeyUp(key: ::std::os::raw::c_int) -> bool;
 }
 extern "C" {
-    pub fn SetExitKey(key: ::std::os::raw::c_int);
-}
-extern "C" {
     pub fn GetKeyPressed() -> ::std::os::raw::c_int;
 }
 extern "C" {
     pub fn GetCharPressed() -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn SetExitKey(key: ::std::os::raw::c_int);
 }
 extern "C" {
     pub fn IsGamepadAvailable(gamepad: ::std::os::raw::c_int) -> bool;
@@ -3414,7 +3582,7 @@ extern "C" {
     pub fn SetGesturesEnabled(flags: ::std::os::raw::c_uint);
 }
 extern "C" {
-    pub fn IsGestureDetected(gesture: ::std::os::raw::c_int) -> bool;
+    pub fn IsGestureDetected(gesture: ::std::os::raw::c_uint) -> bool;
 }
 extern "C" {
     pub fn GetGestureDetected() -> ::std::os::raw::c_int;
@@ -3465,29 +3633,10 @@ extern "C" {
     pub fn DrawLineEx(startPos: Vector2, endPos: Vector2, thick: f32, color: Color);
 }
 extern "C" {
-    pub fn DrawLineBezier(startPos: Vector2, endPos: Vector2, thick: f32, color: Color);
-}
-extern "C" {
-    pub fn DrawLineBezierQuad(
-        startPos: Vector2,
-        endPos: Vector2,
-        controlPos: Vector2,
-        thick: f32,
-        color: Color,
-    );
-}
-extern "C" {
-    pub fn DrawLineBezierCubic(
-        startPos: Vector2,
-        endPos: Vector2,
-        startControlPos: Vector2,
-        endControlPos: Vector2,
-        thick: f32,
-        color: Color,
-    );
-}
-extern "C" {
     pub fn DrawLineStrip(points: *mut Vector2, pointCount: ::std::os::raw::c_int, color: Color);
+}
+extern "C" {
+    pub fn DrawLineBezier(startPos: Vector2, endPos: Vector2, thick: f32, color: Color);
 }
 extern "C" {
     pub fn DrawCircle(
@@ -3536,6 +3685,9 @@ extern "C" {
         radius: f32,
         color: Color,
     );
+}
+extern "C" {
+    pub fn DrawCircleLinesV(center: Vector2, radius: f32, color: Color);
 }
 extern "C" {
     pub fn DrawEllipse(
@@ -3694,6 +3846,121 @@ extern "C" {
     );
 }
 extern "C" {
+    pub fn DrawSplineLinear(
+        points: *mut Vector2,
+        pointCount: ::std::os::raw::c_int,
+        thick: f32,
+        color: Color,
+    );
+}
+extern "C" {
+    pub fn DrawSplineBasis(
+        points: *mut Vector2,
+        pointCount: ::std::os::raw::c_int,
+        thick: f32,
+        color: Color,
+    );
+}
+extern "C" {
+    pub fn DrawSplineCatmullRom(
+        points: *mut Vector2,
+        pointCount: ::std::os::raw::c_int,
+        thick: f32,
+        color: Color,
+    );
+}
+extern "C" {
+    pub fn DrawSplineBezierQuadratic(
+        points: *mut Vector2,
+        pointCount: ::std::os::raw::c_int,
+        thick: f32,
+        color: Color,
+    );
+}
+extern "C" {
+    pub fn DrawSplineBezierCubic(
+        points: *mut Vector2,
+        pointCount: ::std::os::raw::c_int,
+        thick: f32,
+        color: Color,
+    );
+}
+extern "C" {
+    pub fn DrawSplineSegmentLinear(p1: Vector2, p2: Vector2, thick: f32, color: Color);
+}
+extern "C" {
+    pub fn DrawSplineSegmentBasis(
+        p1: Vector2,
+        p2: Vector2,
+        p3: Vector2,
+        p4: Vector2,
+        thick: f32,
+        color: Color,
+    );
+}
+extern "C" {
+    pub fn DrawSplineSegmentCatmullRom(
+        p1: Vector2,
+        p2: Vector2,
+        p3: Vector2,
+        p4: Vector2,
+        thick: f32,
+        color: Color,
+    );
+}
+extern "C" {
+    pub fn DrawSplineSegmentBezierQuadratic(
+        p1: Vector2,
+        c2: Vector2,
+        p3: Vector2,
+        thick: f32,
+        color: Color,
+    );
+}
+extern "C" {
+    pub fn DrawSplineSegmentBezierCubic(
+        p1: Vector2,
+        c2: Vector2,
+        c3: Vector2,
+        p4: Vector2,
+        thick: f32,
+        color: Color,
+    );
+}
+extern "C" {
+    pub fn GetSplinePointLinear(startPos: Vector2, endPos: Vector2, t: f32) -> Vector2;
+}
+extern "C" {
+    pub fn GetSplinePointBasis(
+        p1: Vector2,
+        p2: Vector2,
+        p3: Vector2,
+        p4: Vector2,
+        t: f32,
+    ) -> Vector2;
+}
+extern "C" {
+    pub fn GetSplinePointCatmullRom(
+        p1: Vector2,
+        p2: Vector2,
+        p3: Vector2,
+        p4: Vector2,
+        t: f32,
+    ) -> Vector2;
+}
+extern "C" {
+    pub fn GetSplinePointBezierQuad(p1: Vector2, c2: Vector2, p3: Vector2, t: f32) -> Vector2;
+}
+extern "C" {
+    pub fn GetSplinePointBezierCubic(
+        p1: Vector2,
+        c2: Vector2,
+        c3: Vector2,
+        p4: Vector2,
+        t: f32,
+    ) -> Vector2;
+}
+extern "C" {
     pub fn CheckCollisionRecs(rec1: Rectangle, rec2: Rectangle) -> bool;
 }
 extern "C" {
@@ -3761,6 +4028,13 @@ extern "C" {
     ) -> Image;
 }
 extern "C" {
+    pub fn LoadImageSvg(
+        fileNameOrString: *const ::std::os::raw::c_char,
+        width: ::std::os::raw::c_int,
+        height: ::std::os::raw::c_int,
+    ) -> Image;
+}
+extern "C" {
     pub fn LoadImageAnim(
         fileName: *const ::std::os::raw::c_char,
         frames: *mut ::std::os::raw::c_int,
@@ -3789,6 +4063,13 @@ extern "C" {
     pub fn ExportImage(image: Image, fileName: *const ::std::os::raw::c_char) -> bool;
 }
 extern "C" {
+    pub fn ExportImageToMemory(
+        image: Image,
+        fileType: *const ::std::os::raw::c_char,
+        fileSize: *mut ::std::os::raw::c_int,
+    ) -> *mut ::std::os::raw::c_uchar;
+}
+extern "C" {
     pub fn ExportImageAsCode(image: Image, fileName: *const ::std::os::raw::c_char) -> bool;
 }
 extern "C" {
@@ -3799,23 +4080,25 @@ extern "C" {
     ) -> Image;
 }
 extern "C" {
-    pub fn GenImageGradientV(
+    pub fn GenImageGradientLinear(
         width: ::std::os::raw::c_int,
         height: ::std::os::raw::c_int,
-        top: Color,
-        bottom: Color,
-    ) -> Image;
-}
-extern "C" {
-    pub fn GenImageGradientH(
-        width: ::std::os::raw::c_int,
-        height: ::std::os::raw::c_int,
-        left: Color,
-        right: Color,
+        direction: ::std::os::raw::c_int,
+        start: Color,
+        end: Color,
     ) -> Image;
 }
 extern "C" {
     pub fn GenImageGradientRadial(
+        width: ::std::os::raw::c_int,
+        height: ::std::os::raw::c_int,
+        density: f32,
+        inner: Color,
+        outer: Color,
+    ) -> Image;
+}
+extern "C" {
+    pub fn GenImageGradientSquare(
         width: ::std::os::raw::c_int,
         height: ::std::os::raw::c_int,
         density: f32,
@@ -3950,6 +4233,9 @@ extern "C" {
 }
 extern "C" {
     pub fn ImageFlipHorizontal(image: *mut Image);
+}
+extern "C" {
+    pub fn ImageRotate(image: *mut Image, degrees: ::std::os::raw::c_int);
 }
 extern "C" {
     pub fn ImageRotateCW(image: *mut Image);
@@ -4268,8 +4554,8 @@ extern "C" {
     pub fn LoadFontEx(
         fileName: *const ::std::os::raw::c_char,
         fontSize: ::std::os::raw::c_int,
-        fontChars: *mut ::std::os::raw::c_int,
-        glyphCount: ::std::os::raw::c_int,
+        codepoints: *mut ::std::os::raw::c_int,
+        codepointCount: ::std::os::raw::c_int,
     ) -> Font;
 }
 extern "C" {
@@ -4281,8 +4567,8 @@ extern "C" {
         fileData: *const ::std::os::raw::c_uchar,
         dataSize: ::std::os::raw::c_int,
         fontSize: ::std::os::raw::c_int,
-        fontChars: *mut ::std::os::raw::c_int,
-        glyphCount: ::std::os::raw::c_int,
+        codepoints: *mut ::std::os::raw::c_int,
+        codepointCount: ::std::os::raw::c_int,
     ) -> Font;
 }
 extern "C" {
@@ -4293,15 +4579,15 @@ extern "C" {
         fileData: *const ::std::os::raw::c_uchar,
         dataSize: ::std::os::raw::c_int,
         fontSize: ::std::os::raw::c_int,
-        fontChars: *mut ::std::os::raw::c_int,
-        glyphCount: ::std::os::raw::c_int,
+        codepoints: *mut ::std::os::raw::c_int,
+        codepointCount: ::std::os::raw::c_int,
         type_: ::std::os::raw::c_int,
     ) -> *mut GlyphInfo;
 }
 extern "C" {
     pub fn GenImageFontAtlas(
-        chars: *const GlyphInfo,
-        recs: *mut *mut Rectangle,
+        glyphs: *const GlyphInfo,
+        glyphRecs: *mut *mut Rectangle,
         glyphCount: ::std::os::raw::c_int,
         fontSize: ::std::os::raw::c_int,
         padding: ::std::os::raw::c_int,
@@ -4309,7 +4595,7 @@ extern "C" {
     ) -> Image;
 }
 extern "C" {
-    pub fn UnloadFontData(chars: *mut GlyphInfo, glyphCount: ::std::os::raw::c_int);
+    pub fn UnloadFontData(glyphs: *mut GlyphInfo, glyphCount: ::std::os::raw::c_int);
 }
 extern "C" {
     pub fn UnloadFont(font: Font);
@@ -4364,12 +4650,15 @@ extern "C" {
     pub fn DrawTextCodepoints(
         font: Font,
         codepoints: *const ::std::os::raw::c_int,
-        count: ::std::os::raw::c_int,
+        codepointCount: ::std::os::raw::c_int,
         position: Vector2,
         fontSize: f32,
         spacing: f32,
         tint: Color,
     );
+}
+extern "C" {
+    pub fn SetTextLineSpacing(spacing: ::std::os::raw::c_int);
 }
 extern "C" {
     pub fn MeasureText(
@@ -4843,7 +5132,7 @@ extern "C" {
 extern "C" {
     pub fn LoadModelAnimations(
         fileName: *const ::std::os::raw::c_char,
-        animCount: *mut ::std::os::raw::c_uint,
+        animCount: *mut ::std::os::raw::c_int,
     ) -> *mut ModelAnimation;
 }
 extern "C" {
@@ -4853,7 +5142,7 @@ extern "C" {
     pub fn UnloadModelAnimation(anim: ModelAnimation);
 }
 extern "C" {
-    pub fn UnloadModelAnimations(animations: *mut ModelAnimation, count: ::std::os::raw::c_uint);
+    pub fn UnloadModelAnimations(animations: *mut ModelAnimation, animCount: ::std::os::raw::c_int);
 }
 extern "C" {
     pub fn IsModelAnimationValid(model: Model, anim: ModelAnimation) -> bool;
@@ -4910,6 +5199,9 @@ extern "C" {
     pub fn SetMasterVolume(volume: f32);
 }
 extern "C" {
+    pub fn GetMasterVolume() -> f32;
+}
+extern "C" {
     pub fn LoadWave(fileName: *const ::std::os::raw::c_char) -> Wave;
 }
 extern "C" {
@@ -4929,6 +5221,9 @@ extern "C" {
     pub fn LoadSoundFromWave(wave: Wave) -> Sound;
 }
 extern "C" {
+    pub fn LoadSoundAlias(source: Sound) -> Sound;
+}
+extern "C" {
     pub fn IsSoundReady(sound: Sound) -> bool;
 }
 extern "C" {
@@ -4943,6 +5238,9 @@ extern "C" {
 }
 extern "C" {
     pub fn UnloadSound(sound: Sound);
+}
+extern "C" {
+    pub fn UnloadSoundAlias(alias: Sound);
 }
 extern "C" {
     pub fn ExportWave(wave: Wave, fileName: *const ::std::os::raw::c_char) -> bool;

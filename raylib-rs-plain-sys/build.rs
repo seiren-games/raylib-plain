@@ -7,7 +7,7 @@ use raylib_rs_plain_common as rl_common;
 use regex::Regex;
 use rl_common::RAYLIB_REPOSITORY_PATH;
 
-const RAYLIB_VERSION: &str = "4.5.0";
+const RAYLIB_VERSION: &str = "5.0";
 const ADDITIONAL_RAW_LINE_COMMENT: &str = "// ------------ Additional raw_line";
 const USE_STRUM: bool = true;
 
