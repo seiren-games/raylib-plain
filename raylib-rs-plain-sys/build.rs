@@ -38,6 +38,9 @@ fn main() {
     let reg = Regex::new("\r\n|\r|\n").unwrap();
     let mut content:String = reg.replace_all(&content, "\r\n").to_string();
 
+    // Fix clippy error
+    content = content.replace("f64 = 3.141592653589793;", "f64 = std::f64::consts::PI;");
+
     // Add custom attributes to enum
     if USE_STRUM {
         content = content.replacen(
