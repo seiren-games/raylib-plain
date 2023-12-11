@@ -24,3 +24,4 @@ jobs:
     - run: cargo --version
     - run: cargo build -vv
     - run: cargo test _ci -- --nocapture
+    - run: cargo clippy

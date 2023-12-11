@@ -55,7 +55,7 @@ fn main() {
     content = content.replacen(ADDITIONAL_RAW_LINE_COMMENT, "", 1);
 
     // Write back to file
-    fs::write(&out_path, content).unwrap();
+    fs::write(out_path, content).unwrap();
 }
 
 fn clone_raylib() {

@@ -54,7 +54,7 @@ fn generate_define() {
             println!("{}", identifier.value);
             let color_value = identifier.value.to_string();
             let line = reg.replace_all(&color_value, "");
-            let color_array:Vec<&str> = line.split(",").collect();
+            let color_array:Vec<&str> = line.split(',').collect();
             let line = format!(
                 "pub const {}:Color = Color {{r:{}, g:{}, b:{}, a:{}}};",
                 identifier.name,
