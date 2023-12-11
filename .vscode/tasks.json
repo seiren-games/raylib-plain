@@ -14,12 +14,12 @@
 			"label": "rust: cargo test"
 		},
 		{
-			"type": "cargo",
-			"command": "clean",
-			"problemMatcher": [
-				"$rustc"
-			],
-			"label": "rust: cargo clean"
+			"label": "git clean .gitignore files",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"command": "git clean -ffd -X",
 		}
 	]
 }
