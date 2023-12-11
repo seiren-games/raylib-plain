@@ -4,6 +4,7 @@ use std::fs::ReadDir;
 use std::fs;
 use std::path::PathBuf;
 use raylib_rs_plain_common as rl_common;
+use regex::Regex;
 use rl_common::RAYLIB_REPOSITORY_PATH;
 
 const RAYLIB_VERSION: &str = "4.5.0";
@@ -32,7 +33,11 @@ fn main() {
     // Write the bindings to the $OUT_DIR/bindings.rs file.
     let out_path = PathBuf::from("src").join("lib.rs");
 
-    let mut content = bindings.to_string();
+    let content = bindings.to_string();
+    // Fix line separator
+    let reg = Regex::new("\r\n|\r|\n").unwrap();
+    let mut content:String = reg.replace_all(&content, "\r\n").to_string();
+
     // Add custom attributes to enum
     if USE_STRUM {
         content = content.replacen(
