@@ -139,7 +139,7 @@ fn fix_reserved_keyword(name:&str) -> String {
 
 fn generate_function_body(function:&FunctionIdentifier, return_type:&str) -> String {
     let mut body = String::new();
-    if return_type != "" {
+    if !return_type.is_empty() {
         body += "return ";
     };
 
@@ -204,14 +204,14 @@ fn generate_header(raylib_api:&RaylibApi) -> Vec<String> {
 fn c_to_rs_type(c_type:&str) -> String {
     let mut modifier:String = String::new();
     let mut unprocessed_elements:Vec<&str> = Vec::new();
-    for type_element in c_type.split(" ") {
+    for type_element in c_type.split(' ') {
         let mut asterisk_part:String = String::new();
         for asterisk in type_element.chars() {
             if asterisk != '*' {
                 continue;
             }
             // First asterisk if there are multiple asterisks.
-            if type_element.len() > 1 && !asterisk_part.contains("*") {
+            if type_element.len() > 1 && !asterisk_part.contains('*') {
                 asterisk_part += "*mut ";
                 continue;
             }
