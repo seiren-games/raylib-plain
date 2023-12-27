@@ -1,11 +1,15 @@
 use raylib_rs_plain_sys as rl;
 pub use rl::Color;
 pub use rl::KeyboardKey;
+pub use rl::ConfigFlags;
+pub use rl::MouseButton;
 pub use rl::Rectangle;
 pub use rl::Texture;
 pub use rl::Texture2D;
 pub use rl::Vector2;
+pub use rl::Font;
 use std::ffi::CString;
+use std::ptr::null_mut;
 pub mod color_define;
 pub use color_define as color;
 // wip: pub mod function;
@@ -27,6 +31,41 @@ pub fn clear_background(color: rl::Color) {
     unsafe { rl::ClearBackground(color) }
 }
 
+pub fn is_font_ready(font: Font) -> bool {
+    unsafe { rl::IsFontReady(font) }
+}
+
+pub fn load_font(file_name: &str) -> Option<Font> {
+    let file_name: CString = CString::new(file_name).unwrap();
+    let font:Font = unsafe { rl::LoadFont(file_name.as_ptr()) };
+
+    return if is_font_ready(font) {
+        Some(font)
+    } else {
+        None
+    }
+}
+
+pub fn load_font_ex(
+    file_name: &str,
+    font_size: ::std::os::raw::c_int,
+    font_chars: Option<&mut [::std::os::raw::c_int]>,
+    glyph_count: ::std::os::raw::c_int,
+) -> Option<Font> {
+    let file_name: CString = CString::new(file_name).unwrap();
+    let raw_font_chars = match font_chars {
+        None => null_mut(),
+        Some(v) => v.as_mut_ptr()
+    };
+    let font:Font = unsafe { rl::LoadFontEx(file_name.as_ptr(), font_size, raw_font_chars, glyph_count) };
+    
+    return if is_font_ready(font) {
+        Some(font)
+    } else {
+        None
+    }
+}
+
 pub fn draw_text(
     text: &str,
     pos_x: ::std::os::raw::c_int,
@@ -36,6 +75,18 @@ pub fn draw_text(
 ) {
     let text: CString = CString::new(text).unwrap();
     unsafe { rl::DrawText(text.as_ptr(), pos_x, pos_y, font_size, color) }
+}
+
+pub fn draw_text_ex(
+    font: Font,
+    text: &str,
+    position: Vector2,
+    font_size: f32,
+    spacing: f32,
+    tint: Color,
+) {
+    let text: CString = CString::new(text).unwrap();
+    unsafe { rl::DrawTextEx(font, text.as_ptr(), position, font_size, spacing, tint) }
 }
 
 pub fn draw_texture(
@@ -96,6 +147,18 @@ pub fn is_key_down(key: rl::KeyboardKey) -> bool {
     return unsafe { rl::IsKeyDown(key as i32) };
 }
 
+pub fn get_mouse_position() -> Vector2 {
+    unsafe { rl::GetMousePosition() }
+}
+
+pub fn is_mouse_button_pressed(button: MouseButton) -> bool {
+    unsafe { rl::IsMouseButtonPressed(button as i32) }
+}
+
+pub fn is_mouse_button_down(button: MouseButton) -> bool {
+    unsafe { rl::IsMouseButtonDown(button as i32) }
+}
+
 pub fn get_random_value(
     min: ::std::os::raw::c_int,
     max: ::std::os::raw::c_int,
@@ -111,6 +174,26 @@ pub fn measure_text(
     return unsafe { rl::MeasureText(text.as_ptr(), font_size) };
 }
 
+pub fn measure_text_ex(
+    font: Font,
+    text: &str,
+    font_size: f32,
+    spacing: f32,
+) -> Vector2 {
+    let text: CString = CString::new(text).unwrap();
+    unsafe { rl::MeasureTextEx(font, text.as_ptr(), font_size, spacing) }
+}
+
+pub fn draw_line(
+    start_pos_x: ::std::os::raw::c_int,
+    start_pos_y: ::std::os::raw::c_int,
+    end_pos_x: ::std::os::raw::c_int,
+    end_pos_y: ::std::os::raw::c_int,
+    color: Color,
+) {
+    unsafe { rl::DrawLine(start_pos_x, start_pos_y, end_pos_x, end_pos_y, color) }
+}
+
 pub fn draw_rectangle(
     pos_x: ::std::os::raw::c_int,
     pos_y: ::std::os::raw::c_int,
@@ -123,6 +206,16 @@ pub fn draw_rectangle(
     }
 }
 
+pub fn draw_rectangle_lines(
+    pos_x: ::std::os::raw::c_int,
+    pos_y: ::std::os::raw::c_int,
+    width: ::std::os::raw::c_int,
+    height: ::std::os::raw::c_int,
+    color: Color,
+) {
+    unsafe { rl::DrawRectangleLines(pos_x, pos_y, width, height, color) }
+}
+
 pub fn fade(color: Color, alpha: f32) -> Color {
     return unsafe {
         rl::Fade(color, alpha)
@@ -132,6 +225,12 @@ pub fn fade(color: Color, alpha: f32) -> Color {
 pub fn set_exit_key(key: KeyboardKey) {
     unsafe {
         rl::SetExitKey(key as i32)
+    }
+}
+
+pub fn set_config_flags(flags: ::std::os::raw::c_uint) {
+    unsafe {
+        rl::SetConfigFlags(flags)
     }
 }
 

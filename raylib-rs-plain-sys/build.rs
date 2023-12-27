@@ -4,9 +4,10 @@ use std::fs::ReadDir;
 use std::fs;
 use std::path::PathBuf;
 use raylib_rs_plain_common as rl_common;
+use regex::Regex;
 use rl_common::RAYLIB_REPOSITORY_PATH;
 
-const RAYLIB_VERSION: &str = "4.2.0";
+const RAYLIB_VERSION: &str = "5.0";
 const ADDITIONAL_RAW_LINE_COMMENT: &str = "// ------------ Additional raw_line";
 const USE_STRUM: bool = true;
 
@@ -23,7 +24,7 @@ fn main() {
         .raw_line(ADDITIONAL_RAW_LINE_COMMENT)
         // Tell cargo to invalidate the built crate whenever any of the
         // included header files changed.
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
         // Finish the builder and generate the bindings.
         .generate()
         // Unwrap the Result and panic on failure.
@@ -32,7 +33,14 @@ fn main() {
     // Write the bindings to the $OUT_DIR/bindings.rs file.
     let out_path = PathBuf::from("src").join("lib.rs");
 
-    let mut content = bindings.to_string();
+    let content = bindings.to_string();
+    // Fix line separator
+    let reg = Regex::new("\r\n|\r|\n").unwrap();
+    let mut content:String = reg.replace_all(&content, "\r\n").to_string();
+
+    // Fix clippy error
+    content = content.replace("f64 = 3.141592653589793;", "f64 = std::f64::consts::PI;");
+
     // Add custom attributes to enum
     if USE_STRUM {
         content = content.replacen(
@@ -50,11 +58,12 @@ fn main() {
     content = content.replacen(ADDITIONAL_RAW_LINE_COMMENT, "", 1);
 
     // Write back to file
-    fs::write(&out_path, content).unwrap();
+    fs::write(out_path, content).unwrap();
 }
 
 fn clone_raylib() {
     // TODO: Don't clone if the folder exists.
+    // TODO: If the tag(RAYLIB_VERSION) has changed, switch it.
     // - No need to pull. Because it is a revision specification, it never changes.
     std::process::Command::new("git")
         .arg("clone")
