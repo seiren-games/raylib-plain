@@ -92,6 +92,7 @@ fn generate_function(raylib_api:&RaylibApi) {
             "/** {} */\n",
              identifier.description,
         );
+        let attribute = "#[allow(clippy::not_unsafe_ptr_arg_deref)]\n";
         let return_type = c_to_rs_return_type(identifier.return_type.as_str());
         let body = format!(
             "pub fn {}({}){} {{ {} }}\n",
@@ -100,7 +101,7 @@ fn generate_function(raylib_api:&RaylibApi) {
             return_type,
             generate_function_body(identifier, return_type.as_str()),
         );
-        raylib_function.push_str(&(comment + &body + "\n"));
+        raylib_function.push_str(&(comment + attribute + &body + "\n"));
     }
 
     fs::write("./src/function.rs", raylib_function).unwrap();
