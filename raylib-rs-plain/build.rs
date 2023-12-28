@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use std::{fs, env, path::Path, time::Duration, thread};
+use std::{fs, env};
 use raylib_rs_plain_common as rl_common;
 use regex::Regex;
 use std::process::Command;
@@ -7,26 +7,7 @@ use convert_case::{Case, Casing};
 
 fn main() {
     let raylib_api_json_path = "../raylib-rs-plain-sys/".to_owned() + rl_common::RAYLIB_REPOSITORY_PATH + "/parser/output/raylib_api.json";
-
-    // Sometimes raylib-rs-plain-sys build is not completed and raylib_api.json cannot be obtained.
-    // - Therefore, wait until raylib_api.json can be obtained.
-    let artifact_path = Path::new(&raylib_api_json_path);
-    let max_attempts = 20;
-    let wait_duration = Duration::from_secs(5);
-    for attempt in 1..=max_attempts {
-        if artifact_path.exists() {
-            println!("Artifact found. Continue with build.");
-            break;
-        } else if attempt == max_attempts {
-            panic!("Artifact not found.");
-        } else {
-            println!("Retry because artifact not found.({}/{})", attempt, max_attempts);
-            thread::sleep(wait_duration);
-        }
-    }
-
     let content = fs::read_to_string(raylib_api_json_path).unwrap();
-
     let raylib_api:RaylibApi = serde_json::from_str(&content).unwrap();
 
     generate_function(&raylib_api);
