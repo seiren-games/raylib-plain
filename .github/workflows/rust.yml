@@ -22,7 +22,17 @@ jobs:
     - run: rustup show
     - run: rustup component list --installed
     - run: cargo --version
-    - run: cargo build -vv
+      
+    # Enable cc.
+    - name: Display PATH
+      run: echo $Env:PATH
+    - run: copy "C:\mingw64\bin\gcc.exe" "C:\mingw64\bin\cc.exe"
+    - run: dir "C:\mingw64\bin"
+    - run: gcc --version
+    - run: cc --version
+      
+    - run: cargo install cargo-make
+    - run: cargo make build-plain -vv
     - run: cargo test _ci -- --nocapture
     - run: rustup component add clippy
     - run: cargo clippy

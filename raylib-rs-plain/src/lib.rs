@@ -12,7 +12,7 @@ use std::ffi::CString;
 use std::ptr::null_mut;
 pub mod color_define;
 pub use color_define as color;
-// wip: pub mod function;
+pub mod function;
 
 pub fn init_window(width: ::std::os::raw::c_int, height: ::std::os::raw::c_int, title: &str) {
     let title: CString = CString::new(title).unwrap();
