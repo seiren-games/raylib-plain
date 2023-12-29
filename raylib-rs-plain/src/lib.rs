@@ -71,10 +71,10 @@ pub fn load_texture(file_name: &str) -> Option<rl::Texture2D> {
     let file_name: CString = CString::new(file_name).unwrap();
     let texture: rl::Texture2D = unsafe { rl::LoadTexture(file_name.as_ptr()) };
 
-    return if texture.id == 0 {
-        Option::None
-    } else {
+    return if is_texture_ready(texture) {
         Option::Some(texture)
+    } else {
+        Option::None
     };
 }
 
