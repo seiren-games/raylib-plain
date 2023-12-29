@@ -75,6 +75,22 @@ fn clone_raylib() {
         .arg(RAYLIB_REPOSITORY_PATH)
         .status()
         .unwrap();
+
+        std::process::Command::new("make")
+        .current_dir(RAYLIB_REPOSITORY_PATH.to_owned() + "/parser")
+        .status()
+        .unwrap();
+
+        std::process::Command::new(RAYLIB_REPOSITORY_PATH.to_owned() + "/parser" + "/raylib_parser")
+            .args([
+                "--output",
+                "output/raylib_api.json",
+                "--format",
+                "JSON"
+            ])
+        .current_dir(RAYLIB_REPOSITORY_PATH.to_owned() + "/parser")
+        .status()
+        .unwrap();
 }
 
 fn build_raylib() {
