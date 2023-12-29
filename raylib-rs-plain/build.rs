@@ -151,13 +151,13 @@ fn generate_function_body(function:&FunctionIdentifier, return_type:&str) -> Str
 fn generate_header(raylib_api:&RaylibApi) -> Vec<String> {
     let mut header:Vec<String> = vec![
         "use raylib_rs_plain_sys as rl;".to_string(),
-        // "use std::ffi::CString;".to_string(),
-        "use ::std::os::raw::c_int;".to_string(),
-        "use ::std::os::raw::c_uint;".to_string(),
-        "use ::std::os::raw::c_long;".to_string(),
-        "use ::std::os::raw::c_void;".to_string(),
-        "use ::std::os::raw::c_uchar;".to_string(),
-        "use ::std::os::raw::c_char;".to_string(),
+        "pub use std::ffi::CString;".to_string(),
+        "pub use ::std::os::raw::c_int;".to_string(),
+        "pub use ::std::os::raw::c_uint;".to_string(),
+        "pub use ::std::os::raw::c_long;".to_string(),
+        "pub use ::std::os::raw::c_void;".to_string(),
+        "pub use ::std::os::raw::c_uchar;".to_string(),
+        "pub use ::std::os::raw::c_char;".to_string(),
         "\n".to_string(),
     ];
 
