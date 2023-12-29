@@ -104,11 +104,18 @@ fn generate_arg(_params:&Option<Vec<ArgIdentifier>>) -> String {
             Option::None
         } else {
             Option::Some(
-                fix_reserved_keyword(param.name.to_case(Case::Snake).as_str()) + ":" + c_to_rs_type(param.arg_type.as_str()).as_str()
+                fix_reserved_keyword(param.name.to_case(Case::Snake).as_str()) + ":" + c_to_rs_param_type(param.arg_type.as_str()).as_str()
             )
         }
     ).collect();
     return rs_params.join(", ");
+}
+
+fn c_to_rs_param_type(c_type:&str) -> String {
+    if c_type == "const char *" {
+        return "&str".to_owned();
+    }
+    c_to_rs_type(c_type)
 }
 
 fn fix_reserved_keyword(name:&str) -> String {
@@ -134,7 +141,7 @@ fn generate_function_body(function:&FunctionIdentifier, return_type:&str) -> Str
             if param.name == "args" && param.arg_type == "..." {
                 Option::None
             } else {
-                Option::Some(fix_reserved_keyword(param.name.to_case(Case::Snake).as_str()))
+                Option::Some(to_rs_param(param))
             }
         ).collect();
         rs_params.join(", ")
@@ -148,6 +155,14 @@ fn generate_function_body(function:&FunctionIdentifier, return_type:&str) -> Str
     return body;
 }
 
+fn to_rs_param(param:&ArgIdentifier) -> String {
+    let mut ret = fix_reserved_keyword(param.name.to_case(Case::Snake).as_str());
+    if param.arg_type == "const char *" {
+        ret = format!("str_to_c_char({})", ret);
+    }
+    ret
+}
+
 fn generate_header(raylib_api:&RaylibApi) -> Vec<String> {
     let mut header:Vec<String> = vec![
         "use raylib_rs_plain_sys as rl;".to_string(),
@@ -158,6 +173,7 @@ fn generate_header(raylib_api:&RaylibApi) -> Vec<String> {
         "pub use ::std::os::raw::c_void;".to_string(),
         "pub use ::std::os::raw::c_uchar;".to_string(),
         "pub use ::std::os::raw::c_char;".to_string(),
+        "use crate::str_to_c_char;".to_string(),
         "\n".to_string(),
     ];
 
