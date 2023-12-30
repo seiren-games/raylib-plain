@@ -1,2 +1,2 @@
-# raylib-rs-plain
-wip: Rust bindings for Raylib. No high-level wrapping.
+# raylib-plain
+Rust bindings for Raylib. No high-level wrapping.

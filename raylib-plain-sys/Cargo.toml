@@ -1,5 +1,5 @@
 [package]
-name = "raylib-rs-plain-sys"
+name = "raylib-plain-sys"
 version = "0.1.0"
 edition = "2021"
 
@@ -12,5 +12,5 @@ strum_macros = "0.25"
 [build-dependencies]
 bindgen = "0.69"
 cc = "1.0.79"
-raylib-rs-plain-common = { version = "0.1.0", path = "../raylib-rs-plain-common" }
+raylib-plain-common = { version = "0.1.0", path = "../raylib-plain-common" }
 regex = "1.10"

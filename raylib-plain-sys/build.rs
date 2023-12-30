@@ -3,7 +3,7 @@ extern crate bindgen;
 use std::fs::ReadDir;
 use std::fs;
 use std::path::PathBuf;
-use raylib_rs_plain_common as rl_common;
+use raylib_plain_common as rl_common;
 use regex::Regex;
 use rl_common::RAYLIB_REPOSITORY_PATH;
 

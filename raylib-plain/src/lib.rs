@@ -1,4 +1,4 @@
-use raylib_rs_plain_sys as rl;
+use raylib_plain_sys as rl;
 pub use rl::ConfigFlags;
 pub use rl::KeyboardKey;
 pub use rl::MouseButton;

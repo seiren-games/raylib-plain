@@ -2,11 +2,11 @@
 workspace = false
 command = "cargo"
 args = ["build"]
-cwd = "raylib-rs-plain-sys"
+cwd = "raylib-plain-sys"
 
 [tasks.build-plain]
 workspace = false
 command = "cargo"
 args = ["build"]
-cwd = "raylib-rs-plain"
+cwd = "raylib-plain"
 dependencies = ["build-plain-sys"]
