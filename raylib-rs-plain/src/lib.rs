@@ -1,6 +1,6 @@
 use raylib_rs_plain_sys as rl;
-pub use rl::KeyboardKey;
 pub use rl::ConfigFlags;
+pub use rl::KeyboardKey;
 pub use rl::MouseButton;
 use std::ptr::null_mut;
 pub mod color_define;
@@ -11,12 +11,12 @@ pub mod tools;
 pub use tools::str_to_c_char;
 
 pub fn load_font(file_name: &str) -> Option<Font> {
-    let font:Font = function::load_font(file_name);
+    let font: Font = function::load_font(file_name);
     return if is_font_ready(font) {
         Some(font)
     } else {
         None
-    }
+    };
 }
 
 pub fn load_font_ex(
@@ -27,15 +27,15 @@ pub fn load_font_ex(
 ) -> Option<Font> {
     let raw_font_chars = match font_chars {
         None => null_mut(),
-        Some(v) => v.as_mut_ptr()
+        Some(v) => v.as_mut_ptr(),
     };
-    let font:Font = function::load_font_ex(file_name, font_size, raw_font_chars, glyph_count);
-    
+    let font: Font = function::load_font_ex(file_name, font_size, raw_font_chars, glyph_count);
+
     return if is_font_ready(font) {
         Some(font)
     } else {
         None
-    }
+    };
 }
 
 pub fn load_texture(file_name: &str) -> Option<rl::Texture2D> {
@@ -76,7 +76,13 @@ mod tests {
         while !window_should_close() {
             begin_drawing();
             clear_background(color::RAYWHITE);
-            draw_text("Congrats! You created your first window!", 190, 200, 20, color::LIGHTGRAY);
+            draw_text(
+                "Congrats! You created your first window!",
+                190,
+                200,
+                20,
+                color::LIGHTGRAY,
+            );
             end_drawing();
         }
         close_window();
