@@ -148,10 +148,13 @@ fn generate_function_body(function:&FunctionIdentifier, return_type:&str) -> Str
         },
     };
 
-    body += ("unsafe { rl::".to_owned()
-        + function.name.as_str()
-        + "(" + arg.as_str() + ") };"
-    ).as_str();
+    let function_name =
+        if function.return_type == "const char *" {
+            format!("unsafe {{ CStr::from_ptr(rl::{}({})) }}.to_string_lossy().into();", function.name, arg)
+        } else {
+            format!("unsafe {{ rl::{}({}) }};", function.name, arg)
+        };
+    body += &function_name;
     return body;
 }
 
@@ -174,6 +177,7 @@ fn generate_header(raylib_api:&RaylibApi) -> Vec<String> {
         "pub use ::std::os::raw::c_uchar;".to_string(),
         "pub use ::std::os::raw::c_char;".to_string(),
         "use crate::str_to_c_char;".to_string(),
+        "use std::ffi::CStr;".to_string(),
         "\n".to_string(),
     ];
 
@@ -250,6 +254,9 @@ fn c_to_rs_type(c_type:&str) -> String {
 fn c_to_rs_return_type(c_type:&str) -> String {
     if c_type == "void" {
         return "".to_owned();
+    }
+    if c_type == "const char *" {
+        return " -> String".to_owned();
     }
 
     return " -> ".to_owned() + c_to_rs_type(c_type).as_str();

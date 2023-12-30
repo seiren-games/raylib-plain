@@ -2,6 +2,7 @@
 #![allow(clippy::not_unsafe_ptr_arg_deref, clippy::too_many_arguments)]
 use crate::str_to_c_char;
 use raylib_rs_plain_sys as rl;
+use std::ffi::CStr;
 pub use std::ffi::CString;
 pub use std::os::raw::c_char;
 pub use std::os::raw::c_int;
@@ -272,8 +273,10 @@ pub fn get_window_scale_dpi() -> Vector2 {
 }
 
 /** Get the human-readable, UTF-8 encoded name of the specified monitor */
-pub fn get_monitor_name(monitor: c_int) -> *const c_char {
-    return unsafe { rl::GetMonitorName(monitor) };
+pub fn get_monitor_name(monitor: c_int) -> String {
+    return unsafe { CStr::from_ptr(rl::GetMonitorName(monitor)) }
+        .to_string_lossy()
+        .into();
 }
 
 /** Set clipboard text content */
@@ -282,8 +285,10 @@ pub fn set_clipboard_text(text: &str) {
 }
 
 /** Get clipboard text content */
-pub fn get_clipboard_text() -> *const c_char {
-    return unsafe { rl::GetClipboardText() };
+pub fn get_clipboard_text() -> String {
+    return unsafe { CStr::from_ptr(rl::GetClipboardText()) }
+        .to_string_lossy()
+        .into();
 }
 
 /** Enable waiting for events on EndDrawing(), no automatic event polling */
@@ -698,38 +703,52 @@ pub fn get_file_length(file_name: &str) -> c_int {
 }
 
 /** Get pointer to extension for a filename string (includes dot: '.png') */
-pub fn get_file_extension(file_name: &str) -> *const c_char {
-    return unsafe { rl::GetFileExtension(str_to_c_char(file_name)) };
+pub fn get_file_extension(file_name: &str) -> String {
+    return unsafe { CStr::from_ptr(rl::GetFileExtension(str_to_c_char(file_name))) }
+        .to_string_lossy()
+        .into();
 }
 
 /** Get pointer to filename for a path string */
-pub fn get_file_name(file_path: &str) -> *const c_char {
-    return unsafe { rl::GetFileName(str_to_c_char(file_path)) };
+pub fn get_file_name(file_path: &str) -> String {
+    return unsafe { CStr::from_ptr(rl::GetFileName(str_to_c_char(file_path))) }
+        .to_string_lossy()
+        .into();
 }
 
 /** Get filename string without extension (uses static string) */
-pub fn get_file_name_without_ext(file_path: &str) -> *const c_char {
-    return unsafe { rl::GetFileNameWithoutExt(str_to_c_char(file_path)) };
+pub fn get_file_name_without_ext(file_path: &str) -> String {
+    return unsafe { CStr::from_ptr(rl::GetFileNameWithoutExt(str_to_c_char(file_path))) }
+        .to_string_lossy()
+        .into();
 }
 
 /** Get full path for a given fileName with path (uses static string) */
-pub fn get_directory_path(file_path: &str) -> *const c_char {
-    return unsafe { rl::GetDirectoryPath(str_to_c_char(file_path)) };
+pub fn get_directory_path(file_path: &str) -> String {
+    return unsafe { CStr::from_ptr(rl::GetDirectoryPath(str_to_c_char(file_path))) }
+        .to_string_lossy()
+        .into();
 }
 
 /** Get previous directory path for a given path (uses static string) */
-pub fn get_prev_directory_path(dir_path: &str) -> *const c_char {
-    return unsafe { rl::GetPrevDirectoryPath(str_to_c_char(dir_path)) };
+pub fn get_prev_directory_path(dir_path: &str) -> String {
+    return unsafe { CStr::from_ptr(rl::GetPrevDirectoryPath(str_to_c_char(dir_path))) }
+        .to_string_lossy()
+        .into();
 }
 
 /** Get current working directory (uses static string) */
-pub fn get_working_directory() -> *const c_char {
-    return unsafe { rl::GetWorkingDirectory() };
+pub fn get_working_directory() -> String {
+    return unsafe { CStr::from_ptr(rl::GetWorkingDirectory()) }
+        .to_string_lossy()
+        .into();
 }
 
 /** Get the directory of the running application (uses static string) */
-pub fn get_application_directory() -> *const c_char {
-    return unsafe { rl::GetApplicationDirectory() };
+pub fn get_application_directory() -> String {
+    return unsafe { CStr::from_ptr(rl::GetApplicationDirectory()) }
+        .to_string_lossy()
+        .into();
 }
 
 /** Change working directory, return true on success */
@@ -901,8 +920,10 @@ pub fn is_gamepad_available(gamepad: c_int) -> bool {
 }
 
 /** Get gamepad internal name id */
-pub fn get_gamepad_name(gamepad: c_int) -> *const c_char {
-    return unsafe { rl::GetGamepadName(gamepad) };
+pub fn get_gamepad_name(gamepad: c_int) -> String {
+    return unsafe { CStr::from_ptr(rl::GetGamepadName(gamepad)) }
+        .to_string_lossy()
+        .into();
 }
 
 /** Check if a gamepad button has been pressed once */
@@ -2525,8 +2546,10 @@ pub fn get_codepoint_previous(text: &str, codepoint_size: *mut c_int) -> c_int {
 }
 
 /** Encode one codepoint into UTF-8 byte array (array length returned as parameter) */
-pub fn codepoint_to_utf_8(codepoint: c_int, utf_8_size: *mut c_int) -> *const c_char {
-    return unsafe { rl::CodepointToUTF8(codepoint, utf_8_size) };
+pub fn codepoint_to_utf_8(codepoint: c_int, utf_8_size: *mut c_int) -> String {
+    return unsafe { CStr::from_ptr(rl::CodepointToUTF8(codepoint, utf_8_size)) }
+        .to_string_lossy()
+        .into();
 }
 
 /** Copy one string to another, returns bytes copied */
@@ -2545,13 +2568,17 @@ pub fn text_length(text: &str) -> c_uint {
 }
 
 /** Text formatting with variables (sprintf() style) */
-pub fn text_format(text: &str) -> *const c_char {
-    return unsafe { rl::TextFormat(str_to_c_char(text)) };
+pub fn text_format(text: &str) -> String {
+    return unsafe { CStr::from_ptr(rl::TextFormat(str_to_c_char(text))) }
+        .to_string_lossy()
+        .into();
 }
 
 /** Get a piece of a text string */
-pub fn text_subtext(text: &str, position: c_int, length: c_int) -> *const c_char {
-    return unsafe { rl::TextSubtext(str_to_c_char(text), position, length) };
+pub fn text_subtext(text: &str, position: c_int, length: c_int) -> String {
+    return unsafe { CStr::from_ptr(rl::TextSubtext(str_to_c_char(text), position, length)) }
+        .to_string_lossy()
+        .into();
 }
 
 /** Replace text string (WARNING: memory must be freed!) */
@@ -2565,8 +2592,10 @@ pub fn text_insert(text: &str, insert: &str, position: c_int) -> *mut c_char {
 }
 
 /** Join text strings with delimiter */
-pub fn text_join(text_list: *mut *const c_char, count: c_int, delimiter: &str) -> *const c_char {
-    return unsafe { rl::TextJoin(text_list, count, str_to_c_char(delimiter)) };
+pub fn text_join(text_list: *mut *const c_char, count: c_int, delimiter: &str) -> String {
+    return unsafe { CStr::from_ptr(rl::TextJoin(text_list, count, str_to_c_char(delimiter))) }
+        .to_string_lossy()
+        .into();
 }
 
 /** Split text into multiple strings */
@@ -2585,18 +2614,24 @@ pub fn text_find_index(text: &str, find: &str) -> c_int {
 }
 
 /** Get upper case version of provided string */
-pub fn text_to_upper(text: &str) -> *const c_char {
-    return unsafe { rl::TextToUpper(str_to_c_char(text)) };
+pub fn text_to_upper(text: &str) -> String {
+    return unsafe { CStr::from_ptr(rl::TextToUpper(str_to_c_char(text))) }
+        .to_string_lossy()
+        .into();
 }
 
 /** Get lower case version of provided string */
-pub fn text_to_lower(text: &str) -> *const c_char {
-    return unsafe { rl::TextToLower(str_to_c_char(text)) };
+pub fn text_to_lower(text: &str) -> String {
+    return unsafe { CStr::from_ptr(rl::TextToLower(str_to_c_char(text))) }
+        .to_string_lossy()
+        .into();
 }
 
 /** Get Pascal case notation version of provided string */
-pub fn text_to_pascal(text: &str) -> *const c_char {
-    return unsafe { rl::TextToPascal(str_to_c_char(text)) };
+pub fn text_to_pascal(text: &str) -> String {
+    return unsafe { CStr::from_ptr(rl::TextToPascal(str_to_c_char(text))) }
+        .to_string_lossy()
+        .into();
 }
 
 /** Get integer value from text (negative values not supported) */
