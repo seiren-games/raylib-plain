@@ -49,8 +49,6 @@ pub fn load_texture(file_name: &str) -> Option<rl::Texture2D> {
 }
 
 pub fn is_key_down(key: rl::KeyboardKey) -> bool {
-    // TODO: Might want to avoid `as`.
-    // - e.g. `use num::ToPrimitive`
     function::is_key_down(key as i32)
 }
 
